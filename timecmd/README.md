@@ -1,0 +1,2 @@
+timecmd.bat se debe incluir en el Path de las variables de entorno del sistema, para ser utilizado en cualquier directorio.
+Entrega el tiempo de ejecución de cualquier programa ejecutado por cmd en Windows.
