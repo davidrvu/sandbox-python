@@ -3,8 +3,9 @@
 #!/usr/bin/env python
 
 # PASO 1: conda install -c clg_boar vtk=7.0.0
-# PASO 2: pip install mayavi
-# PASO 3: conda install -c anaconda wxpython=3.0.0.0
+# PASO 2: Microsoft Visual C++ 9.0 is required. Get it from http://aka.ms/vcpython27
+# PASO 3: pip install mayavi
+# PASO 4: conda install -c anaconda wxpython=3.0.0.0
 
 from __future__ import print_function
 import numpy as np
@@ -72,8 +73,7 @@ def  main():
     ## PARAMETROS
     ##############################################
     debug       = 1
-    #fileName    = "BD_lito_mini.csv"
-    fileName    = "BD_lito.csv"
+    fileName    = "BD_lit.csv"
     xCol        = "x"
     yCol        = "y"
     zCol        = "z"
