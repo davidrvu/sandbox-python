@@ -1,6 +1,11 @@
 # pip install gpy
+# HELP GPy    > http://nbviewer.jupyter.org/github/SheffieldML/notebook/blob/master/GPy/basic_gp.ipynb
+# HELP PLOTLY > https://plot.ly/python/line-charts/
 import GPy
 import numpy as np
+from plotly import __version__
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+from plotly.graph_objs import Scatter, Figure, Layout, Scattergl, Line
 from IPython.display import display
 
 
@@ -10,6 +15,8 @@ from IPython.display import display
 ## 1-dimensional model
 
 def main():
+    GPy.plotting.change_plotting_library('plotly')
+
     X = np.random.uniform(-3.,3.,(20,1))
     Y = np.sin(X) + np.random.randn(20,1)*0.05 #Y include some noise.
 
@@ -23,14 +30,77 @@ def main():
     #The inputs required for building the model are the observations and the kernel:
     m = GPy.models.GPRegression(X,Y,kernel)
 
-    display(m)
-    print "m = "
-    print m
 
+    ###########
+    m.optimize(messages=True)
+    m.optimize_restarts(num_restarts = 10)
+
+    ###########
     fig = m.plot()
-    print "fig = "
-    print fig
-    GPy.plotting.show(fig, filename='basic_gp_regression_notebook')
+
+    ###print fig
+    # Points Scatter
+    yData = list(fig[0]['data'][1]['y'])
+    xData = list(fig[0]['data'][1]['x'])
+
+    # Mean
+    yMean = list(fig[0]['data'][0]['y'])
+    xMean = list(fig[0]['data'][0]['x'])
+
+    # Limite inferior
+    yInf  = list(fig[0]['data'][2]['y'])
+    xInf  = list(fig[0]['data'][2]['x'])
+
+    # Limite superior
+    ySup  = list(fig[0]['data'][3]['y'])
+    xSup  = list(fig[0]['data'][3]['x'])
+
+    # Create a trace
+    traceData = Scatter(
+        x    = xData,
+        y    = yData,
+        line = Line(color='rgba(255,0,0,1.0)'),
+        mode = 'markers',
+        name = 'Data',
+        showlegend = True,
+    )
+
+    traceMean = Scatter(
+        x    = xMean,
+        y    = yMean,
+        line = dict(
+            width = 3,
+            color = 'rgba(0,100,80, 1.0)'
+        ),
+        mode = 'lines',
+        name = 'Media',
+        showlegend = True,
+    )
+
+    # Se invierte el orden del borde inferior
+    xInf = xInf[::-1]
+    yInf = yInf[::-1]
+
+    traceLimits = Scatter(
+        x          = xSup+[None]+xInf,
+        y          = ySup+[None]+yInf,
+        fill       = 'tozeroy',
+        #fill       = 'tozerox',
+        #fill       = 'tonexty',
+        #fill       = 'tonextx',
+        fillcolor  = 'rgba(0,100,80,0.2)',
+        line = dict(
+            width = 2,
+            color = 'rgba(0, 50, 0, 0.3)'
+            #color='transparent'
+        ),
+        showlegend = True,
+        name       = 'Confidence',
+    )    
+
+    plotData = [traceData, traceMean, traceLimits]
+
+    plot(plotData, filename='test1.html')
 
 if __name__ == "__main__":
     main()
