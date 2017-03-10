@@ -6,10 +6,8 @@ echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo RUN GPy
 echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-echo RUN func1
-echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-CALL timecmd python test1.py
+echo RUN tutorial1
+CALL timecmd python tutorial1.py
 
 ::echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ::echo RUN func2
