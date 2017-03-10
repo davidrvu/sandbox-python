@@ -17,8 +17,10 @@ from IPython.display import display
 def main():
     GPy.plotting.change_plotting_library('plotly')
 
-    X = np.random.uniform(-3.,3.,(20,1))
-    Y = np.sin(X) + np.random.randn(20,1)*0.05 #Y include some noise.
+    numPuntos = 100
+
+    X = np.random.uniform(-3.,3.,(numPuntos,1))
+    Y = np.sin(X) + np.random.randn(numPuntos,1)*0.05 #Y include some noise.
 
     #The first step is to define the covariance kernel we want to use for the model.
     kernel = GPy.kern.RBF(input_dim=1, variance=1., lengthscale=1.)
@@ -34,7 +36,6 @@ def main():
     ###########
     m.optimize(messages=True)
     m.optimize_restarts(num_restarts = 10)
-
     ###########
     fig = m.plot()
 
