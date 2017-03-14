@@ -4,7 +4,7 @@
 
 from plotly import __version__
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-from plotly.graph_objs import Scatter, Figure, Layout, Scattergl, Line
+from plotly.graph_objs import *
 
 def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
     mGroupLen = len(mGroup)
@@ -91,6 +91,10 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
         plotData = [traceLimits, traceData, traceMean]
         plotDataAll = plotDataAll + plotData
 
-    figAll = Figure(data=plotDataAll)#, layout=layout)
+        ## otro
+        #plotDataAll = [traceLimits] + plotDataAll + [traceData] + [traceMean]
+
+    dataAll = Data(plotDataAll)
+    figAll = Figure(data=dataAll)#, layout=layout)
     plot(figAll, filename=outputFile)
     #plot(plotDataAll, filename=outputFile)
