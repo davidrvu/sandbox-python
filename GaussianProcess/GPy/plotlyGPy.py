@@ -11,6 +11,10 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
 
     plotDataAll = []
 
+    #traceData   = [None]*mGroupLen
+    #traceMean   = [None]*mGroupLen
+    #traceLimits = [None]*mGroupLen
+
     for i in range(0, mGroupLen):
         m       = mGroup[i]
         mLegend = mLegendAll[i]
@@ -35,7 +39,8 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
         xSup  = list(fig[0]['data'][3]['x'])
 
         # Create a trace
-        traceData = Scatter(
+        #traceData[i] = Scatter(
+        traceData = Scatter(    
             x    = xData,
             y    = yData,
             line = Line(color='rgba(255,0,0,1.0)'),
@@ -45,6 +50,7 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
             showlegend = True,
         )
 
+        #traceMean[i] = Scatter(
         traceMean = Scatter(
             x    = xMean,
             y    = yMean,
@@ -62,6 +68,7 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
         xInf = xInf[::-1]
         yInf = yInf[::-1]
 
+        #traceLimits[i] = Scatter(
         traceLimits = Scatter(
             x          = xSup+[None]+xInf,
             y          = ySup+[None]+yInf,
@@ -80,7 +87,10 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
             name = mLegend[2],
         )    
         #plotData = [traceData, traceMean, traceLimits]
-        plotData = [traceLimits,traceData, traceMean]
+        #plotData = [traceLimits[i], traceData[i], traceMean[i]]
+        plotData = [traceLimits, traceData, traceMean]
         plotDataAll = plotDataAll + plotData
 
-    plot(plotDataAll, filename=outputFile)
+    figAll = Figure(data=plotDataAll)#, layout=layout)
+    plot(figAll, filename=outputFile)
+    #plot(plotDataAll, filename=outputFile)
