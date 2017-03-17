@@ -6,6 +6,12 @@ from plotly import __version__
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 from plotly.graph_objs import *
 
+def printDataFromGPYplot(i, mGroupLen, fig):
+    print "######################################################"
+    print "Iteracion: " + str(i) + " de " + str(mGroupLen-1)
+    print fig
+    print "######################################################"
+
 def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
     mGroupLen = len(mGroup)
 
@@ -21,7 +27,8 @@ def plotlyGPy(mGroup, mLegendAll, mColorAll, outputFile):
 
         fig = m.plot()
 
-        ###print fig
+        printDataFromGPYplot(i, mGroupLen, fig)
+
         # Points Scatter
         yData = list(fig[0]['data'][1]['y'])
         xData = list(fig[0]['data'][1]['x'])
