@@ -5,6 +5,7 @@
 # pip install gpy
 # HELP GPy    > http://nbviewer.jupyter.org/github/SheffieldML/notebook/blob/master/GPy/basic_gp.ipynb
 # HELP PLOTLY > https://plot.ly/python/line-charts/
+
 import os
 import GPy
 import numpy as np
@@ -20,19 +21,19 @@ def main():
     if not os.path.exists(pathPlots):
         os.makedirs(pathPlots)
 
-    #######################
+    ##############################################
     ## PARAMETROS
-    #######################
+    ##############################################
 
     outputFileSinOpt = pathPlots + 'test1_sinOpt.html'
     outputFileConOpt = pathPlots + 'test1_conOpt.html'
     outputFileAll    = pathPlots + 'test1.html'
     mLegendAll       = []
-    mColorAll        = []
+    mColorAll        = [] # TODOTODO definir colores
 
-    #######################
+    ##############################################
     ## Definiciones
-    #######################
+    ##############################################
     GPy.plotting.change_plotting_library('plotly')
 
     numPuntos = 100
@@ -41,50 +42,49 @@ def main():
     Y = np.sin(X) + np.random.randn(numPuntos,1)*0.05 #Y include some noise.
 
     #The first step is to define the covariance kernel we want to use for the model.
-    kernel = GPy.kern.RBF(input_dim=1, variance=1.0, lengthscale=1.)
-
-
+    kernel = GPy.kern.RBF(input_dim=1, variance=1.0, lengthscale=1.0)
     #The parameter input_dim stands for the dimension of the input space. 
     #The parameters variance and lengthscale are optional, and default to 1. 
     #Many other kernels are implemented, type GPy.kern.<tab> to see a list
 
+    ##############################################
+    ## Se crea el modelo
+    ##############################################
     #The inputs required for building the model are the observations and the kernel:
-    mSinOptimizar = GPy.models.GPRegression(X,Y,kernel)
+    mSinOptimizar   = GPy.models.GPRegression(X,Y,kernel)
+    figSinOptimizar = mSinOptimizar.plot()
     
     mLegend = ['Data sin Opt','Media sin Opt','Confidence sin Opt']
     mLegendAll.append(mLegend)
-    plotlyGPy([mSinOptimizar], [mLegend], mColorAll, outputFileSinOpt)
+    plotlyGPy([figSinOptimizar], [mLegend], mColorAll, outputFileSinOpt)
+    #The shaded region corresponds to ~95% confidence intervals (ie +/- 2 standard deviation).
 
-    #######################
-    ## Optimization
-    #######################
-    mOptimo = GPy.models.GPRegression(X,Y,kernel)
+    ##############################################
+    ## Se optimiza el modelo
+    ##############################################
+    mOptimo = mSinOptimizar
 
-
-
-    #m.optimize(messages=True)
-    #m.optimize_restarts(num_restarts = 10)
-
-    #mOptimo = m
-    #mLegend = ['Data Optimo','Media Optimo','Confidence Optimo']
-    #mLegendAll.append(mLegend)
-
-    #plotlyGPy([m], [mLegend], mColorAll, outputFileConOpt)
-
-
+    # A common approach is to find the values of the parameters that maximize the likelihood of the data.
     mOptimo.optimize(messages=True)
+
+    # If we want to perform some restarts to try to improve the result of the optimization, we can use the optimize_restarts function. 
+    # This selects random (drawn from N(0,1)N(0,1)) initializations for the parameter values, optimizes each, 
+    # and sets the model to the best solution found.
     mOptimo.optimize_restarts(num_restarts = 10)
+    figOptimo = mOptimo.plot()
 
     mLegend = ['Data Optimo','Media Optimo','Confidence Optimo']
     mLegendAll.append(mLegend)
 
-    plotlyGPy([mOptimo], [mLegend], mColorAll, outputFileConOpt)
+    plotlyGPy([figOptimo], [mLegend], mColorAll, outputFileConOpt)
+    # The parameters values have been optimized against the log likelihood 
+    # (aka the log marginal likelihood): the fit should be much better.
 
-    #Graficos de todos los casos
-    mGroup = [mOptimo, mSinOptimizar]
-    #mGroup = [mSinOptimizar]
-
-    plotlyGPy(mGroup, mLegendAll, mColorAll, outputFileAll)
+    ##############################################
+    ## Se grafican ambos modelos juntos
+    ##############################################
+    figGroup = [figSinOptimizar, figOptimo]
+    plotlyGPy(figGroup, mLegendAll, mColorAll, outputFileAll)
 
 if __name__ == "__main__":
     main()
