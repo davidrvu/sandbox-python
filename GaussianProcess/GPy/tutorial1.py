@@ -16,6 +16,7 @@ def main():
     print "## Gaussian process regression tutorial"
     print "##    -> 1-dimensional model"
     print "#################################################"
+    titulo = "Gaussian process regression tutorial - 1D model"
     pathPlots = "outputs/"
     # Si la carpeta no existe, se crea
     if not os.path.exists(pathPlots):
@@ -56,7 +57,7 @@ def main():
     
     mLegend = ['Data sin Opt','Media sin Opt','Confidence sin Opt']
     mLegendAll.append(mLegend)
-    plotlyGPy([figSinOptimizar], [mLegend], mColorAll, outputFileSinOpt)
+    plotlyGPy([figSinOptimizar], [mLegend], mColorAll, outputFileSinOpt, titulo)
     #The shaded region corresponds to ~95% confidence intervals (ie +/- 2 standard deviation).
 
     ##############################################
@@ -76,7 +77,7 @@ def main():
     mLegend = ['Data Optimo','Media Optimo','Confidence Optimo']
     mLegendAll.append(mLegend)
 
-    plotlyGPy([figOptimo], [mLegend], mColorAll, outputFileConOpt)
+    plotlyGPy([figOptimo], [mLegend], mColorAll, outputFileConOpt, titulo)
     # The parameters values have been optimized against the log likelihood 
     # (aka the log marginal likelihood): the fit should be much better.
 
@@ -84,7 +85,7 @@ def main():
     ## Se grafican ambos modelos juntos
     ##############################################
     figGroup = [figSinOptimizar, figOptimo]
-    plotlyGPy(figGroup, mLegendAll, mColorAll, outputFileAll)
+    plotlyGPy(figGroup, mLegendAll, mColorAll, outputFileAll, titulo)
 
 if __name__ == "__main__":
     main()
