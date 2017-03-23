@@ -9,7 +9,7 @@
 import os
 import GPy
 import numpy as np
-from plotlyGPy import plotlyGPy
+from plotlyGPy1D import plotlyGPy1D
 
 def main():
     print "#################################################"
@@ -26,11 +26,10 @@ def main():
     ## PARAMETROS
     ##############################################
 
-    outputFileSinOpt = pathPlots + 'test1_sinOpt.html'
-    outputFileConOpt = pathPlots + 'test1_conOpt.html'
-    outputFileAll    = pathPlots + 'test1.html'
-    mLegendAll       = []
-    mColorAll        = [] # TODOTODO definir colores
+    outputFileSinOpt = pathPlots + 'tutorial1_sinOpt.html'
+    outputFileConOpt = pathPlots + 'tutorial1_conOpt.html'
+    outputFileAll    = pathPlots + 'tutorial1_full.html'
+    legendAll       = []
 
     ##############################################
     ## Definiciones
@@ -56,8 +55,9 @@ def main():
     figSinOptimizar = mSinOptimizar.plot()
     
     mLegend = ['Data sin Opt','Media sin Opt','Confidence sin Opt']
-    mLegendAll.append(mLegend)
-    plotlyGPy([figSinOptimizar], [mLegend], mColorAll, outputFileSinOpt, titulo)
+    legendAll.append(mLegend)
+    colorSinOptimizar = [245,61,0, 245,184,0] # RGB_data RGB_GaussianProcess
+    plotlyGPy1D([figSinOptimizar], [mLegend], [colorSinOptimizar], outputFileSinOpt, titulo)
     #The shaded region corresponds to ~95% confidence intervals (ie +/- 2 standard deviation).
 
     ##############################################
@@ -75,17 +75,18 @@ def main():
     figOptimo = mOptimo.plot()
 
     mLegend = ['Data Optimo','Media Optimo','Confidence Optimo']
-    mLegendAll.append(mLegend)
-
-    plotlyGPy([figOptimo], [mLegend], mColorAll, outputFileConOpt, titulo)
+    legendAll.append(mLegend)
+    colorOptimo = [0,61,245,0,184,245] # RGB_data RGB_GaussianProcess
+    plotlyGPy1D([figOptimo], [mLegend], [colorOptimo], outputFileConOpt, titulo)
     # The parameters values have been optimized against the log likelihood 
     # (aka the log marginal likelihood): the fit should be much better.
 
     ##############################################
     ## Se grafican ambos modelos juntos
     ##############################################
-    figGroup = [figSinOptimizar, figOptimo]
-    plotlyGPy(figGroup, mLegendAll, mColorAll, outputFileAll, titulo)
+    figGroup = [figSinOptimizar,   figOptimo]
+    colorAll = [colorSinOptimizar, colorOptimo]
+    plotlyGPy1D(figGroup, legendAll, colorAll, outputFileAll, titulo)
 
 if __name__ == "__main__":
     main()

@@ -43,7 +43,7 @@ def createLayout(titulo):
     return layout
 
 
-def plotlyGPy(figGroup, legendAll, mColorAll, outputFile, titulo):
+def plotlyGPy1D(figGroup, legendAll, colorAll, outputFile, titulo):
     figGroupLen = len(figGroup)
     layout = createLayout(titulo)
 
@@ -52,6 +52,7 @@ def plotlyGPy(figGroup, legendAll, mColorAll, outputFile, titulo):
     for i in range(0, figGroupLen):
         fig       = figGroup[i]
         figLegend = legendAll[i]
+        currColor = colorAll[i]
 
         #printDataFromGPYplot(i, figGroupLen, fig)
 
@@ -75,7 +76,8 @@ def plotlyGPy(figGroup, legendAll, mColorAll, outputFile, titulo):
         traceData = Scatter(    
             x    = xData,
             y    = yData,
-            line = Line(color='rgba(255,0,0,1.0)'),
+            #line = Line(color='rgba(255,0,0,1.0)'),
+            line = Line(color='rgba('+str(currColor[0])+','+str(currColor[1])+','+str(currColor[2])+',1.0)'),
             mode = 'markers',
             #name = 'Data',
             name = figLegend[0],
@@ -88,7 +90,8 @@ def plotlyGPy(figGroup, legendAll, mColorAll, outputFile, titulo):
             y    = yMean,
             line = dict(
                 width = 3,
-                color = 'rgba(0,100,80, 1.0)'
+                #color = 'rgba(0,100,80, 1.0)'
+                color = 'rgba('+str(currColor[3])+','+str(currColor[4])+','+str(currColor[5])+',1.0)'
             ),
             mode = 'lines',
             #name = 'Media',
@@ -108,10 +111,12 @@ def plotlyGPy(figGroup, legendAll, mColorAll, outputFile, titulo):
             #fill       = 'tozerox',
             #fill       = 'tonexty',
             #fill       = 'tonextx',
-            fillcolor  = 'rgba(0,100,80,0.2)',
+            #fillcolor  = 'rgba(0,100,80,0.2)',
+            fillcolor = 'rgba('+str(currColor[3])+','+str(currColor[4])+','+str(currColor[5])+',0.2)',
             line = dict(
                 width = 2,
-                color = 'rgba(0, 50, 0, 0.3)'
+                #color = 'rgba(0, 100, 80, 0.1)'
+                color = 'rgba('+str(currColor[3])+','+str(currColor[4])+','+str(currColor[5])+',0.1)'
                 #color='transparent'
             ),
             showlegend = True,
