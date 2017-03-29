@@ -6,22 +6,26 @@ from mayavi import mlab
 import numpy as np
 
 def plot4Dbox(data, xIni, yIni, zIni):
+    print "xIni = " + str(xIni) + " | yIni = " + str(yIni) + " | zIni = " + str(zIni)
     # Se inicializa la ventana de Mayavi (Background)
     mlab.figure(size = (1024,768), bgcolor = (0.0,0.0,0.0))
 
     mlab.pipeline.image_plane_widget(mlab.pipeline.scalar_field(data),
                                 plane_orientation='x_axes',
                                 slice_index=xIni,
+                                name='x',
                                 #colormap='cool',
                             )
     mlab.pipeline.image_plane_widget(mlab.pipeline.scalar_field(data),
                                 plane_orientation='y_axes',
                                 slice_index=yIni,
+                                name='y',
                                 #colormap='cool',
                             )
     mlab.pipeline.image_plane_widget(mlab.pipeline.scalar_field(data),
                                 plane_orientation='z_axes',
                                 slice_index=zIni,
+                                name='z',
                                 #colormap='cool',
                             )
     mlab.outline()
