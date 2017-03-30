@@ -15,18 +15,24 @@ def plot4Dbox(data, xIni, yIni, zIni):
                                 slice_index=xIni,
                                 name='x',
                                 #colormap='cool',
+                                #colormap='Spectral',
+                                colormap='jet',
                             )
     mlab.pipeline.image_plane_widget(mlab.pipeline.scalar_field(data),
                                 plane_orientation='y_axes',
                                 slice_index=yIni,
                                 name='y',
                                 #colormap='cool',
+                                #colormap='Spectral',
+                                colormap='jet',
                             )
     mlab.pipeline.image_plane_widget(mlab.pipeline.scalar_field(data),
                                 plane_orientation='z_axes',
                                 slice_index=zIni,
                                 name='z',
                                 #colormap='cool',
+                                #colormap='Spectral',
+                                colormap='jet',
                             )
     mlab.outline()
     mlab.axes(x_axis_visibility = True)
@@ -34,5 +40,7 @@ def plot4Dbox(data, xIni, yIni, zIni):
     mlab.axes(z_axis_visibility = True)
 
     #mesh.module_manager.scalar_lut_manager.show_scalar_bar = True
-    mlab.colorbar(orientation='vertical',nb_labels=2,label_fmt='%.1f')
+    #mlab.colorbar(title='colorbar',orientation='vertical',nb_labels=2,nb_colors=10,label_fmt='%.1f')
+    mlab.scalarbar(title='colorbar',orientation='vertical',nb_labels=2,nb_colors=10,label_fmt='%.1f')
+   
     mlab.show()
