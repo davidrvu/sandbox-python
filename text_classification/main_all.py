@@ -8,6 +8,7 @@ import sys
 import tensorflow as tf
 
 sys.path.insert(0, '..//data_science_utils')
+from classification_algorithm_performance import classification_algorithm_performance
 from get_dir_file_ext import get_dir_file_ext
 from pandas_read_csv import pandas_read_csv
 from pandas_write_csv import pandas_write_csv
@@ -79,6 +80,7 @@ def main():
     parser.add_argument('--train_perc',       type=float,           default=0.89, help='train set percentage')
     parser.add_argument('--max_vocab_length', type=int,             default=15,   help='max vocabulary length')
     parser.add_argument('--embedding_size',   type=int,             default=50,   help='embedding size')
+    parser.add_argument('--fig_dir',          type=str, nargs='+',  default=[],   help='Directory for figures')
 
     args = parser.parse_args()
 
@@ -88,12 +90,14 @@ def main():
     train_perc       = args.train_perc
     max_vocab_length = args.max_vocab_length
     embedding_size   = args.embedding_size
+    fig_dir          = args.fig_dir[0]
 
     print("_________________________________________________________")
     print("_________________ARGUMENTS_______________________________")
     print("debug            = " + str(debug))
     print("model_mode       = " + str(model_mode))
     print("file_in          = " + str(file_in))
+    print("fig_dir          = " + str(fig_dir))
     print("train_perc       = " + str(train_perc))
     print("max_vocab_length = " + str(max_vocab_length))
     print("embedding_size   = " + str(embedding_size))
@@ -145,9 +149,8 @@ def main():
     y_test_type  = y_test.dtype
     print("y_train_type = " + str(y_train_type))
     print("y_test_type  = " + str(y_test_type))
-    dictionary_label_flag = 0
+
     if (y_train_type == "object" or y_test_type == "object"):
-        dictionary_label_flag = 1
         print("Se debe transformar cada label string en un label integer!")
         code_list = list(range(1,unique_labels_len+1))
         print(unique_labels)
@@ -162,6 +165,8 @@ def main():
         y_test_type  = y_test.dtype
         print("y_train_type = " + str(y_train_type))
         print("y_test_type  = " + str(y_test_type))
+    else:
+        dictionary_labels = None
 
     ##########################################################################################
     print("\nProcess vocabulary ...")
@@ -189,6 +194,11 @@ def main():
         x_test_vocab  -= 1
         model_case = bag_of_words_model
 
+    # TODOTODO: AGREGAR OTROS MODEL_MODE DESDE ARCHIVOS 2_ 3_ Y 4_
+    else:
+        print("\nERROR: model_mode = " + str(model_mode) + " NO EXISTE.")
+        sys.exit()
+
     model_parameters = {
                         'vocab_len': vocab_len,
                         'embedding_size': embedding_size,
@@ -213,19 +223,11 @@ def main():
     print(y_test.as_matrix())
     print("y_predicted = ")
     print(y_predicted)
-    if(dictionary_label_flag == 1):
-        print(dictionary_labels)
-    ##########################################################################################
-    print("\nPerformance evaluation ...")
+    print("dictionary_labels = ")
+    print(dictionary_labels)
 
-    score = metrics.accuracy_score(y_test, y_predicted)
-    print("Accuracy (sklearn): score = " + str(round(score,4)))
-
-    
-    # TODOTODO: OBTENER f1
-    # TODOTODO: OBTENER PRECITION
-    # TODOTODO: OBTENRE RECALL
-    # TODOTODO: OBTENER MATRIZ DE CONFUSIÓN (EN PLOTLY) (guardar HTML + PNG)
+    figure_name = fig_dir + "confusion_" + filename_in_base + "_model_mode_" + str(model_mode) 
+    classification_algorithm_performance(y_test, y_predicted, figure_name, dictionary_labels, unique_labels)
 
     print("DONE!")
 
