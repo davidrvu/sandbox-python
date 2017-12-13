@@ -23,5 +23,4 @@ echo RUNNING main_all.py ...
 
 
 :: LATAM
-
 CALL timecmd python main_all.py --debug=1 --model_mode=0 --file_in="C://davidrvu//Proyectos//LATAM//1_continuidad_negocios_drvu//data//KPIs Funcional Carga_2017W38_filtered_lang.csv" --train_perc=0.8 --header_features="words_filtered" --header_labels="Sistema" --max_vocab_length=25 --fig_dir="C://davidrvu//Proyectos//LATAM//1_continuidad_negocios_drvu//fig//BOW//"

@@ -17,9 +17,9 @@ def classification_algorithm_performance(y_test, y_predicted, figure_name, dicti
     print("\nclassif_report = ")
     print(classif_report)
 
-    avg_precision_score = round(metrics.precision_score(y_test, y_predicted, average="macro"),3)
-    avg_recall_score    = round(metrics.recall_score(y_test, y_predicted,    average="macro"),3)
-    avg_f1_score        = round(metrics.f1_score(y_test, y_predicted,        average="macro"),3)
+    avg_precision_score = round(metrics.precision_score(y_test, y_predicted, average="macro"),3) # precision = tp / (tp + fp)
+    avg_recall_score    = round(metrics.recall_score(y_test, y_predicted,    average="macro"),3) # recall    = tp / (tp + fn)
+    avg_f1_score        = round(metrics.f1_score(y_test, y_predicted,        average="macro"),3) # f1 = 2 * (precision * recall) / (precision + recall)
 
     print("avg_precision_score = " + str(avg_precision_score))
     print("avg_recall_score    = " + str(avg_recall_score))
@@ -28,6 +28,11 @@ def classification_algorithm_performance(y_test, y_predicted, figure_name, dicti
     conf_matrix = metrics.confusion_matrix(y_test, y_predicted)
     print("\nconfusion_matrix  = ")
     print(conf_matrix) # conf_matrix: Lista de listas
+
+    accuracy_per_class = conf_matrix.diagonal()/conf_matrix.sum(axis=1)
+
+    print("\naccuracy_per_class = ")
+    print(accuracy_per_class)
 
     acc_score = round(metrics.accuracy_score(y_test, y_predicted),3)
     print("\naccuracy_score = " + str(acc_score))
@@ -39,4 +44,4 @@ def classification_algorithm_performance(y_test, y_predicted, figure_name, dicti
     algo_performance.avg_f1_score        = avg_f1_score
     algo_performance.acc_score           = acc_score
 
-    confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labels, unique_labels)
+    confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labels, unique_labels, accuracy_per_class)

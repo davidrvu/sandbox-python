@@ -175,7 +175,7 @@ def main():
     parser = argparse.ArgumentParser(description='Process some arguments.')
 
     parser.add_argument('--debug',            type=int,             default=0,    help='a debug flag (for prints)')
-    parser.add_argument('--model_mode',       type=int,             default=0,    help='a model_mode flag') # 0 = rnn text model | 1 = bag_of_words text model
+    parser.add_argument('--model_mode',       type=int,             default=0,    help='a model_mode flag')
     parser.add_argument('--file_in',          type=str, nargs='+',  default=[],   help='input file')
     parser.add_argument('--train_perc',       type=float,           default=0.89, help='train set percentage')
     parser.add_argument('--header_features',  type=str, nargs='+',  default=[],   help='header features (raw text)')
@@ -211,15 +211,12 @@ def main():
     
     split_datasets(file_in, train_perc, header_labels, final_sort = True)
     [directory, filename_in_base, ext] = get_dir_file_ext(file_in)
-    file_train = directory + "//" + filename_in_base + "_train.csv"
-    file_test  = directory + "//" + filename_in_base + "_test.csv"
-
-    # SOLO VERIFICACION!!!!!!!!!!! (ALCANZA UN Accuracy ~ 0.73)
-    #file_train = directory + "//" + "train_small.csv" 
-    #file_test  = directory + "//" + "test_small.csv"
+    file_train   = directory + "//" + filename_in_base + "_train.csv"
+    file_test    = directory + "//" + filename_in_base + "_test.csv"
+    file_predict = directory + "//" + filename_in_base + "_output_predict.csv"
 
     ##########################################################################################
-    print("\nRead train and test datasets ... ")        
+    print("\nRead train and test datasets ... ")
     df_train = pandas_read_csv(file_train) 
     df_test  = pandas_read_csv(file_test) 
 
@@ -415,6 +412,36 @@ def main():
 
     figure_name = fig_dir + "confusion_" + filename_in_base + "_model_mode_" + str(model_mode) 
     classification_algorithm_performance(y_test, y_predicted, figure_name, dictionary_labels, unique_labels)
+
+    #############################################
+    ## Se guarda archivo con resultados de predicción y sus características respectivas
+    #############################################
+    y_test_str      = [None] * y_test.size
+    y_predicted_str = [None] * y_test.size
+    if dictionary_labels is None:
+        print("No hay diccionario!")
+        for i in range(0, y_test.size):
+            y_test_str[i]      = str(y_test[i])
+            y_predicted_str[i] = str(y_predicted[i])           
+    else: 
+        print("Hay diccionario!")
+        inv_dictionary_labels = {v: k for k, v in dictionary_labels.items()}
+        for i in range(0, y_test.size):
+            y_test_str[i]      = inv_dictionary_labels.get(y_test[i])
+            y_predicted_str[i] = inv_dictionary_labels.get(y_predicted[i])
+
+    y_check = [None] * y_test.size
+    for i in range(0, y_test.size):        
+        if y_predicted[i] == y_test[i]:
+            y_check[i] = "True"
+        else:
+            y_check[i] = "False"
+    df_x_test      = pd.DataFrame(data=x_test.values,   columns=['x_test'])
+    df_y_test      = pd.DataFrame(data=y_test_str,      columns=['y_test'])
+    df_y_predicted = pd.DataFrame(data=y_predicted_str, columns=['y_predicted'])
+    df_y_check     = pd.DataFrame(data=y_check,         columns=['y_check'])
+    df_output      = pd.concat([df_x_test, df_y_test, df_y_predicted, df_y_check], axis=1)
+    pandas_write_csv(df_output, file_predict)
 
     print("DONE!")
 
