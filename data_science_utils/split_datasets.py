@@ -55,12 +55,16 @@ def split_datasets(file_input, train_perc, header_labels, final_sort):
     ########################################################################
     print("-------------------------------------------------")
     print("---> TRAINING SET - LABELS FREQUENCY: " + str(round(train_perc,3)) + " ("+str(df_train_rows)+" rows)")
-    print(df_train[header_labels].value_counts())
+    train_set_counts = df_train[header_labels].value_counts()
+    print(train_set_counts)
     print("-------------------------------------------------")
     print("---> TEST SET     - LABELS FREQUENCY: " + str(round(1-train_perc,3)) + " ("+str(df_test_rows)+" rows)")
-    print(df_test[header_labels].value_counts())
+    test_set_counts  = df_test[header_labels].value_counts()
+    print(test_set_counts)
     print("-------------------------------------------------")
     pandas_write_csv(df_train, file_train)
     pandas_write_csv(df_test, file_test)
 
     print("----> END split_datasets\n")
+
+    return [train_set_counts, test_set_counts]

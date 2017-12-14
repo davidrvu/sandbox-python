@@ -1,5 +1,7 @@
 # DAVIDRVU - 2017
+
 from confusion_plotly import confusion_plotly
+from histogram_train_test_results import histogram_train_test_results
 from sklearn import metrics
 
 class performance_struct:
@@ -9,7 +11,7 @@ class performance_struct:
         self.avg_f1_score        = 0.0
         self.acc_score           = 0.0
 
-def classification_algorithm_performance(y_test, y_predicted, figure_name, dictionary_labels, unique_labels):
+def classification_algorithm_performance(train_set_counts, y_test, y_predicted, confusion_fig_name, histogram_fig_name, dictionary_labels, unique_labels):
     print("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print("\nCLASSIFICATION-ALGORITHM PERFORMANCE: ")
 
@@ -29,6 +31,8 @@ def classification_algorithm_performance(y_test, y_predicted, figure_name, dicti
     print("\nconfusion_matrix  = ")
     print(conf_matrix) # conf_matrix: Lista de listas
 
+    test_correct       = conf_matrix.diagonal()
+    test_incorrect     = conf_matrix.sum(axis=1) - test_correct
     accuracy_per_class = conf_matrix.diagonal()/conf_matrix.sum(axis=1)
 
     print("\naccuracy_per_class = ")
@@ -44,4 +48,5 @@ def classification_algorithm_performance(y_test, y_predicted, figure_name, dicti
     algo_performance.avg_f1_score        = avg_f1_score
     algo_performance.acc_score           = acc_score
 
-    confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labels, unique_labels, accuracy_per_class)
+    confusion_plotly(conf_matrix, algo_performance, confusion_fig_name, dictionary_labels, unique_labels, accuracy_per_class)
+    histogram_train_test_results(train_set_counts, test_correct, test_incorrect, histogram_fig_name, dictionary_labels, unique_labels, "h")

@@ -70,3 +70,5 @@ def confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labe
         image_height_param = 1080        
 
     plot(fig, filename=figure_name_html, image='png', image_width=image_width_param, image_height=image_height_param)
+
+    print("----> END confusion_plotly\n")
