@@ -49,4 +49,4 @@ def classification_algorithm_performance(train_set_counts, y_test, y_predicted, 
     algo_performance.acc_score           = acc_score
 
     confusion_plotly(conf_matrix, algo_performance, confusion_fig_name, dictionary_labels, unique_labels, accuracy_per_class)
-    histogram_train_test_results(train_set_counts, test_correct, test_incorrect, histogram_fig_name, dictionary_labels, unique_labels, "h")
+    histogram_train_test_results(algo_performance, train_set_counts, test_correct, test_incorrect, histogram_fig_name, dictionary_labels, unique_labels, accuracy_per_class, "h")
