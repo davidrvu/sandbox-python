@@ -162,18 +162,18 @@ def char_cnn_model(features, labels, mode, params): # model_mode == 4: # charact
     return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 
-def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_features, header_labels, max_vocab_length):
+def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_features, header_labels, min_samples, max_vocab_length):
     print("\n----> START text_classifier")    
 
     tf.logging.set_verbosity(tf.logging.INFO)
 
     print("\nLoad FULL dataset and split it ... ")
     
-    [train_set_counts, test_set_counts] = split_datasets(file_in, train_perc, header_labels, final_sort = True)
+    [train_set_counts, test_set_counts] = split_datasets(file_in, train_perc, header_labels, min_samples, final_sort = True)
     [directory, filename_in_base, ext] = get_dir_file_ext(file_in)
-    file_train   = directory + "//" + filename_in_base + "_train.csv"
-    file_test    = directory + "//" + filename_in_base + "_test.csv"
-    file_predict = directory + "//" + filename_in_base + "_output_predict.csv"
+    file_train   = directory + "//" + filename_in_base + "_" + header_labels + "_train.csv"
+    file_test    = directory + "//" + filename_in_base + "_" + header_labels + "_test.csv"
+    file_predict = directory + "//" + filename_in_base + "_" + header_labels + "_output_predict.csv"
 
     ##########################################################################################
     print("\nRead train and test datasets ... ")
@@ -191,9 +191,20 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
     print("x_test_size  = " + str(x_test.size))
     print("y_test_size  = " + str(y_test.size))
 
-    unique_labels_train = set(y_train.as_matrix())
-    unique_labels_test  = set(y_test.as_matrix())
-    unique_labels       = list(set(list(unique_labels_train) + list(unique_labels_test)))
+    unique_labels_train = list(set(y_train.as_matrix()))
+    unique_labels_test  = list(set(y_test.as_matrix()))
+
+    unique_labels_train_len = len(unique_labels_train)
+    unique_labels_test_len  = len(unique_labels_test)
+
+    print("unique_labels_train_len = " + str(unique_labels_train_len))
+    print("unique_labels_test_len  = " + str(unique_labels_test_len))
+
+    if (unique_labels_train_len != unique_labels_test_len):
+        print("WARNING: unique_labels_train_len != unique_labels_test_len -> deberían ser iguales! Revisar función split_datasets()")
+        sys.exit()
+
+    unique_labels       = list(set(unique_labels_train + unique_labels_test))
     unique_labels.sort() # SOLO FUNCIONARÁ EN CASO DE labels STRING
     unique_labels_len   = len(unique_labels)
     print(unique_labels)
@@ -235,7 +246,7 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
     ##########################################################################################
 
     if model_mode == 0: # bag_of_words_model
-        print("\n=============> model_mode = 1: bag_of_words_model")
+        print("\n=============> model_mode = 0: bag_of_words_model")
         print("\nSetting model parameters ...")
         embedding_size  = 50
 
@@ -260,7 +271,7 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
         model_case = bag_of_words_model
 
     elif model_mode == 1: # rnn_model
-        print("\n=============> model_mode = 0: rnn_model")
+        print("\n=============> model_mode = 1: rnn_model")
         print("\nSetting model parameters ...")
         embedding_size  = 50
 
@@ -280,7 +291,7 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
         model_case = rnn_model
 
     elif model_mode == 2: # cnn_model
-        print("\n=============> model_mode = 4: cnn_model")
+        print("\n=============> model_mode = 2: cnn_model")
         print("\nSetting model parameters ...")
         max_document_length = 100
         embedding_size      = 20
@@ -323,7 +334,7 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
         model_case = char_rnn_model
 
     elif model_mode == 4: # character cnn model
-        print("\n=============> model_mode = 2: character cnn")
+        print("\n=============> model_mode = 4: character cnn")
         print("\nSetting model parameters ...")
         max_document_length = 100
         n_filters           = 10 
@@ -344,6 +355,11 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
         model_parameters = {'feature_name': feature_name, 'max_document_length': max_document_length, 'n_filters': n_filters, 'filter_shape1': filter_shape1, 'filter_shape2': filter_shape2, 'pooling_window': pooling_window, 'pooling_stride': pooling_stride, 'max_label': max_label}
         batch_size_param = 128
         model_case = char_cnn_model
+
+    elif model_mode == 5: # word2vec
+        print("\n=============> model_mode = 5: word2vec")
+
+        # TODOTODO
 
     else:
         print("\nERROR: model_mode = " + str(model_mode) + " NO EXISTE.")
@@ -370,8 +386,8 @@ def text_classifier(debug, model_mode, file_in, fig_dir, train_perc, header_feat
     print("dictionary_labels = ")
     print(dictionary_labels)
 
-    confusion_fig_name = fig_dir + "\\" + filename_in_base + "_confusion_modelmode_" + str(model_mode)
-    histogram_fig_name = fig_dir +  "\\" + filename_in_base + "_histogram_train_test_modelmode_" + str(model_mode) 
+    confusion_fig_name = fig_dir + "\\" + filename_in_base  + "_1_confu_" + header_labels + "_modelmode_" + str(model_mode)
+    histogram_fig_name = fig_dir +  "\\" + filename_in_base + "_2_histo_" + header_labels + "_modelmode_" + str(model_mode) 
     classification_algorithm_performance(train_set_counts, y_test, y_predicted, confusion_fig_name, histogram_fig_name, dictionary_labels, unique_labels)
 
     #############################################

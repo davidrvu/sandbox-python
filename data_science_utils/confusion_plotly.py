@@ -25,8 +25,13 @@ def confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labe
 
     title_plot          = "Confusion Matrix" +  " |Precision=" + str(avg_precision_score) + " |Recall=" + str(avg_recall_score) + " |f1=" + str(avg_f1_score) + " |Accuracy=" + str(acc_score)
 
-    unique_labels_len   = len(unique_labels)
-    
+    unique_labels_len      = len(unique_labels)
+    print("unique_labels_len      = " + str(unique_labels_len))
+    dictionary_labels_len  = len(dictionary_labels)
+    print("dictionary_labels_len  = " + str(dictionary_labels_len))
+    accuracy_per_class_len = len(accuracy_per_class)
+    print("accuracy_per_class_len = " + str(accuracy_per_class_len))
+
     if dictionary_labels is None:
         print("No hay diccionario!")
         #x = unique_labels
@@ -69,6 +74,7 @@ def confusion_plotly(conf_matrix, algo_performance, figure_name, dictionary_labe
         image_width_param  = 1920
         image_height_param = 1080        
 
+    print("Rendering confusion matrix in plotly ...")
     plot(fig, filename=figure_name_html, image='png', image_width=image_width_param, image_height=image_height_param)
 
     print("----> END confusion_plotly\n")

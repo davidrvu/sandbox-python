@@ -1,4 +1,7 @@
+# DAVIDRVU - 2017
+
 import pandas as pd
+import sys
 
 def pandas_read_csv(file_input):
     print("Abriendo archivo " + file_input + " con la función pandas_read_csv ... ")
