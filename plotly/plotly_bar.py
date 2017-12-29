@@ -3,8 +3,11 @@ from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import os
 import sys
 
-def plotly_bar(counts_array, names_array, filename, orientation, title_in):
+def plotly_bar(counts_array, names_array, filename, orientation, title_in, **kwargs):
     print("\n----> START plotly_bar")
+
+    margin_left = kwargs.get('margin_left', 100)         # default value
+
     suma_total_freq  = sum(counts_array)
     counts_array_len = len(counts_array)
     names_array_len  = len(names_array)
@@ -28,6 +31,9 @@ def plotly_bar(counts_array, names_array, filename, orientation, title_in):
     if(orientation == "h"):
         layout = {
             'title': title_plot, 
+            'margin': {
+                'l': margin_left,
+            },
             'xaxis': {
                 'title': 'Frequency',
                 'titlefont' : {
@@ -52,7 +58,10 @@ def plotly_bar(counts_array, names_array, filename, orientation, title_in):
         trace1 = Bar(y=names_array, x=counts_array, orientation = orientation)
     elif (orientation == "v"):
         layout = {
-            'title': title_plot, 
+            'title': title_plot,
+            'margin': {
+                'l': margin_left,
+            }, 
             'xaxis': {
                 'title': 'Classes',
                 'titlefont' : {
