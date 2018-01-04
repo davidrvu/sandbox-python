@@ -10,9 +10,31 @@ import collections
 import pandas as pd
 import sys
 
-def split_datasets(file_input, train_perc, header_labels, min_samples, final_sort):
+def split_datasets(file_input, train_perc, header_labels, min_samples, final_sort, **kwargs):
     print("\n----> START split_datasets")
 
+    print("train_perc       = " + str(train_perc))
+
+    file_train = kwargs.get('file_train', None)  # default value
+    file_test  = kwargs.get('file_test', None)   # default value
+
+    #################################################################
+    # Se setean directorios de archivos de salida
+    #################################################################
+
+    [directory, filename_in_base, ext] = get_dir_file_ext(file_input)
+
+    if file_train is None:
+        file_train   = directory + "//" + filename_in_base + "_" + header_labels + "_train.csv"
+    if file_test is None:
+        file_test    = directory + "//" + filename_in_base + "_" + header_labels + "_test.csv"
+
+    print("file_train       = " + file_train)
+    print("file_test        = " + file_test)
+
+    #################################################################
+    # Se importa el archivo csv que se desea separar en los sets de TRAIN y TEST
+    #################################################################
     dataFrameIn = pandas_read_csv(file_input)
     dataFrameIn_rows = dataFrameIn.shape[0]
 
@@ -24,7 +46,7 @@ def split_datasets(file_input, train_perc, header_labels, min_samples, final_sor
         sys.exit()
 
     #################################################################
-    # FILTRO DE MUESTRAS POR CLASE: Se asegura un mínimo numero de muestras (min_samples) por clase. De lo contrario se eliminan los registros!
+    # FILTRO DE MUESTRAS POR CLASE: Se asegura un mÃ­nimo numero de muestras (min_samples) por clase. De lo contrario se eliminan los registros!
     #################################################################
     print("min_samples = " + str(min_samples))
 
@@ -57,20 +79,7 @@ def split_datasets(file_input, train_perc, header_labels, min_samples, final_sor
     print("dataFrameFiltered_rows = " + str(dataFrameFiltered_rows))
 
     #################################################################
-    # Se setean directorios de archivos de salida
-    #################################################################
-
-    [directory, filename_in_base, ext] = get_dir_file_ext(file_input)
-
-    file_train   = directory + "//" + filename_in_base + "_" + header_labels + "_train.csv"
-    file_test    = directory + "//" + filename_in_base + "_" + header_labels + "_test.csv"
-
-    print("train_perc       = " + str(train_perc))
-    print("file_train       = " + file_train)
-    print("file_test        = " + file_test)
-
-    #################################################################
-    # Se realiza la separación de dataFrames
+    # Se realiza la separaciÃ³n de dataFrames
     #################################################################   
 
     print("train_test_split (stratify by header_labels = " + header_labels + ") ...")
