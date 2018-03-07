@@ -92,7 +92,7 @@ def lstm_core(data_in):
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled = scaler.fit_transform(values)
     # specify the number of lag hours
-    n_hours = 3
+    n_hours    = 3
     n_features = 8
     # frame as supervised learning
     reframed = series_to_supervised(scaled, n_hours, 1)
@@ -103,15 +103,25 @@ def lstm_core(data_in):
     values = reframed.values
     n_train_hours = 365 * 24
     train = values[:n_train_hours, :]
-    test = values[n_train_hours:, :]
+    test  = values[n_train_hours:, :]
+
+    num_filas = values.shape[0]
+
+    # pyplot train and test
+    pyplot.plot(list(range(0, n_train_hours)), train[:, -n_features], 'bo-', label='Train')
+    pyplot.plot(list(range(n_train_hours, num_filas)), test[:,  -n_features], 'ko-', label='Test')
+    pyplot.legend()
+    pyplot.show()
+
     # split into input and outputs
     n_obs = n_hours * n_features
     train_X, train_y = train[:, :n_obs], train[:, -n_features]
-    test_X, test_y = test[:, :n_obs], test[:, -n_features]
+    test_X, test_y   = test[:, :n_obs], test[:, -n_features]
     print(train_X.shape, len(train_X), train_y.shape)
+
     # reshape input to be 3D [samples, timesteps, features]
     train_X = train_X.reshape((train_X.shape[0], n_hours, n_features))
-    test_X = test_X.reshape((test_X.shape[0], n_hours, n_features))
+    test_X  = test_X.reshape((test_X.shape[0], n_hours, n_features))
     print(train_X.shape, train_y.shape, test_X.shape, test_y.shape)
      
     # design network
@@ -120,29 +130,43 @@ def lstm_core(data_in):
     model.add(LSTM(50, input_shape=(train_X.shape[1], train_X.shape[2])))
     model.add(Dense(1))
     model.compile(loss='mae', optimizer='adam')
+
     # fit network
     print("fit network ...")
-    history = model.fit(train_X, train_y, epochs=50, batch_size=72, validation_data=(test_X, test_y), verbose=2, shuffle=False)
+    #history = model.fit(train_X, train_y, epochs=50, batch_size=72, validation_data=(test_X, test_y), verbose=2, shuffle=False)
+    history = model.fit(train_X, train_y, epochs=50, batch_size=72, verbose=2, shuffle=False)
+    
     # plot history
     print("plot history ...")
     pyplot.plot(history.history['loss'], label='train')
-    pyplot.plot(history.history['val_loss'], label='test')
+    #pyplot.plot(history.history['val_loss'], label='test')
     pyplot.legend()
     pyplot.show()
      
     # make a prediction
     print("make a prediction ...")
     yhat = model.predict(test_X)
+
+    pyplot.plot(list(range(0, n_train_hours)), train[:, -n_features], 'bo-', label='Train')
+    pyplot.plot(list(range(n_train_hours, num_filas)), test[:,  -n_features], 'ko-', label='Test True')
+    pyplot.plot(list(range(n_train_hours, num_filas)), yhat, 'go-', label='Test Predicted')
+    pyplot.legend()
+    pyplot.show()
+
+
+
     test_X = test_X.reshape((test_X.shape[0], n_hours*n_features))
     # invert scaling for forecast
     inv_yhat = np.concatenate((yhat, test_X[:, -7:]), axis=1)
     inv_yhat = scaler.inverse_transform(inv_yhat)
     inv_yhat = inv_yhat[:,0]
+
     # invert scaling for actual
     test_y = test_y.reshape((len(test_y), 1))
     inv_y = np.concatenate((test_y, test_X[:, -7:]), axis=1)
     inv_y = scaler.inverse_transform(inv_y)
     inv_y = inv_y[:,0]
+
     # calculate RMSE
     print("calculate RMSE ...")
     rmse = math.sqrt(mean_squared_error(inv_y, inv_yhat))
