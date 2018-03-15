@@ -1,5 +1,7 @@
 # DAVIDRVU 2018
 
+# SOURCE: https://machinelearningmastery.com/multivariate-time-series-forecasting-lstms-keras/
+
 from datetime import datetime
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -82,25 +84,58 @@ def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
 def lstm_core(data_in):
     # load dataset
     dataset = pd.read_csv(data_in, header=0, index_col=0)
+
+    print("dataset = ")
+    print(dataset)
+    print(dataset.shape)
+    os.system("pause")
+
     values = dataset.values
+    print("values = ")
+    print(values)
+    print(values.shape)
+    os.system("pause")
+
     # integer encode direction
     encoder = LabelEncoder()
     values[:,4] = encoder.fit_transform(values[:,4])
+
+    print("values = ")
+    print(values)
+    print(values.shape)
+    os.system("pause")
+
     # ensure all data is float
     values = values.astype('float32')
     # normalize features
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled = scaler.fit_transform(values)
+
+    print("scaled = ")
+    print(scaled)
+    print(scaled.shape)
+    os.system("pause")
+
     # specify the number of lag hours
     n_hours    = 3
     n_features = 8
     # frame as supervised learning
-    reframed = series_to_supervised(scaled, n_hours, 1)
+    reframed = series_to_supervised(scaled, n_hours, 1) # TODOTODO: PROBAR series_to_supervised(scaled, 1, 1)
+
+    print("reframed = ")
+    print(reframed)
     print(reframed.shape)
+    os.system("pause")
      
     # split into train and test sets
     print("split into train and test sets ...")
     values = reframed.values
+
+    print("values (2) = ")
+    print(values)
+    print(values.shape)
+    os.system("pause")
+
     n_train_hours = 365 * 24
     train = values[:n_train_hours, :]
     test  = values[n_train_hours:, :]
@@ -114,46 +149,71 @@ def lstm_core(data_in):
     pyplot.show()
 
     # split into input and outputs
-    n_obs = n_hours * n_features
+    n_obs = n_hours * n_features  # 24 = (3 * 8)
+
     train_X, train_y = train[:, :n_obs], train[:, -n_features]
     test_X, test_y   = test[:, :n_obs], test[:, -n_features]
-    print(train_X.shape, len(train_X), train_y.shape)
+
+    print("train_X.shape = ")
+    print(train_X.shape )
+    print("train_y.shape = ")
+    print(train_y.shape )
+    print("test_X.shape = ")
+    print(test_X.shape )
+    print("test_y.shape = ")
+    print(test_y.shape )
+
+    os.system("pause")
 
     # reshape input to be 3D [samples, timesteps, features]
+    print("\nReshape input to be 3D [samples, timesteps, features]")
     train_X = train_X.reshape((train_X.shape[0], n_hours, n_features))
     test_X  = test_X.reshape((test_X.shape[0], n_hours, n_features))
-    print(train_X.shape, train_y.shape, test_X.shape, test_y.shape)
+
+    print("train_X.shape = ")
+    print(train_X.shape )
+    print("train_y.shape = ")
+    print(train_y.shape )
+    print("test_X.shape = ")
+    print(test_X.shape )
+    print("test_y.shape = ")
+    print(test_y.shape )
+
+    os.system("pause")
      
     # design network
-    print("design network ...")
+    print("\nDesign network ...")
     model = Sequential()
     model.add(LSTM(50, input_shape=(train_X.shape[1], train_X.shape[2])))
     model.add(Dense(1))
     model.compile(loss='mae', optimizer='adam')
 
     # fit network
-    print("fit network ...")
+    print("\nFit network ...")
     #history = model.fit(train_X, train_y, epochs=50, batch_size=72, validation_data=(test_X, test_y), verbose=2, shuffle=False)
     history = model.fit(train_X, train_y, epochs=50, batch_size=72, verbose=2, shuffle=False)
     
     # plot history
-    print("plot history ...")
+    print("\nPlot history ...")
     pyplot.plot(history.history['loss'], label='train')
     #pyplot.plot(history.history['val_loss'], label='test')
     pyplot.legend()
     pyplot.show()
      
     # make a prediction
-    print("make a prediction ...")
+    print("\nMake a prediction ...")
     yhat = model.predict(test_X)
+
+    print("yhat.shape = ")
+    print(yhat.shape)
+
+    os.system("pause")
 
     pyplot.plot(list(range(0, n_train_hours)), train[:, -n_features], 'bo-', label='Train')
     pyplot.plot(list(range(n_train_hours, num_filas)), test[:,  -n_features], 'ko-', label='Test True')
     pyplot.plot(list(range(n_train_hours, num_filas)), yhat, 'go-', label='Test Predicted')
     pyplot.legend()
     pyplot.show()
-
-
 
     test_X = test_X.reshape((test_X.shape[0], n_hours*n_features))
     # invert scaling for forecast
