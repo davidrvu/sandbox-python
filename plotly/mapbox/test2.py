@@ -1,3 +1,5 @@
+# DAVIDRVU 2018
+
 from plotly.graph_objs import *
 from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
 import numpy as np
@@ -7,7 +9,7 @@ def main():
     mg_values = [23700.0, 27500.0] # nT
     lat       = [-33.444612, -45.571179]
     lon       = [-70.656512, -72.068399]
-    text_data = ["eldeivi_sensor","elcharly_sensor"]
+    text_data = ["sensor_1","sensor_2"]
 
     for i in range(0, len(text_data)):
         text_data[i] = text_data[i] + ": " + str(mg_values[i]) + " [nT]"
@@ -35,6 +37,13 @@ def main():
                 opacity=0.8
             ),
             text=text_data,
+            #hoverinfo='text',
+
+            ## TODOTODO: ??
+            ##stream=dict(       
+            ##    token="aaa",
+            ##    maxpoints=200
+            ##)
         )
     ])
 
@@ -50,7 +59,8 @@ def main():
                 lon=lon_mean
             ),
             pitch=0,
-            zoom=4
+            zoom=4,
+            style='light'
         ),
     )
 
