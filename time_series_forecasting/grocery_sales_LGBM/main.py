@@ -75,29 +75,7 @@ def LGBM_starter(debug, train_file, test_file, items_file, output_file):
     df_2017.columns = df_2017.columns.get_level_values(1)
 
     items = items.reindex(df_2017.index.get_level_values(1))
-
-#    def get_timespan(df, dt, minus, periods):
-#        return df[
-#            pd.date_range(dt - timedelta(days=minus), periods=periods)
-#        ]
-#
-#    def prepare_dataset(t2017, is_train=True):
-#        X = pd.DataFrame({
-#            "mean_3_2017": get_timespan(df_2017, t2017, 3, 3).mean(axis=1).values,
-#            "mean_7_2017": get_timespan(df_2017, t2017, 7, 7).mean(axis=1).values,
-#            "mean_14_2017": get_timespan(df_2017, t2017, 14, 14).mean(axis=1).values,
-#            "promo_14_2017": get_timespan(promo_2017, t2017, 14, 14).sum(axis=1).values
-#        })
-#        for i in range(16):
-#            X["promo_{}".format(i)] = promo_2017[
-#                t2017 + timedelta(days=i)].values.astype(np.uint8)
-#        if is_train:
-#            y = df_2017[
-#                pd.date_range(t2017, periods=16)
-#            ].values
-#            return X, y
-#        return X
-#
+ 
     print("Preparing dataset...")
     t2017 = date(2017, 6, 21)
     X_l, y_l = [], []
