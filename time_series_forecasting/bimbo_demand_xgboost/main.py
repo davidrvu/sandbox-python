@@ -498,3 +498,8 @@ client_anaylsis()
 client_anaylsis2()
 train, train_target, test, id = preprocess()
 xgboost_train(train, train_target, test, id)
+
+#TODOTODO: plotly
+#TODOTODO: MAIN WITH ARGUMENTS
+#TODOTODO: .BAT
+#TODOTODO: CAMBIAR DIRECTORIOS DE DATA
