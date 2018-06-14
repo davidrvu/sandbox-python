@@ -25,8 +25,10 @@ def client_anaylsis():
     """
     The idea here is to unify the client ID of several different customers to more broad categories.
     """
+    print("\n----> START " + str(sys._getframe().f_code.co_name) )
     # clean duplicate spaces in client names
-    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
+    #client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
+    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv")
     client_df["NombreCliente"] = client_df["NombreCliente"].str.lower()
     client_df["NombreCliente"] = client_df["NombreCliente"].apply(lambda x: " ".join(x.split()))
     client_df = client_df.drop_duplicates(subset="Cliente_ID")
@@ -96,7 +98,7 @@ def client_anaylsis():
                     "^(burguer\sking|burger\sking)\s.*", "^(bip)\s.*", "^(bimbo\sexpendio)\s.*",
                     "^(burguer|burger)\s.*", "^(ba.os)\s.*", "^(bae)\s.*", "^(bachilleres)\s.*", "^(bachillerato)\s.*",
                     "^(autosercivio|auto\sservicio)\s.*", "^(autolavado|auto\slavado)\s.*",
-                    "^(autobuses\sla\spiedad|autobuses\sde\sla\piedad)\s.*", "^(arrachera)\s.*",
+                    "^(autobuses\sla\spiedad|autobuses\sde\sla\spiedad)\s.*", "^(arrachera)\s.*",
                     "^(alsuper\sstore)\s.*", "^(alsuper)\s.*", "^(academia)\s.*", "^(abts)\s.*",
                     "^(abarrotera\slagunitas)\s.*", "^(abarrotera)\s.*", "^(abarrotes\sy\svinos)\s.*",
                     "^(abarrotes\sy\sverduras)\s.*",  "^(abarrotes\sy\ssemillas)\s.*",
@@ -113,12 +115,15 @@ def client_anaylsis():
         client_df.drop(var, axis=1, inplace=True)
     client_df.drop("NombreCliente", axis=1, inplace=True)
     client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz", compression="gzip", index=False)
+    print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
 def client_anaylsis2():
     """
     The idea here is to unify the client ID of several different customers to more broad categories in another
     different way
     """
+    print("\n----> START " + str(sys._getframe().f_code.co_name) )
+
     client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
     # clean duplicate spaces in client names
     client_df["NombreCliente"] = client_df["NombreCliente"].str.upper()
@@ -191,7 +196,11 @@ def client_anaylsis2():
     client_df.rename(columns={"NombreCliente": "client_name3"}, inplace=True)
     client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla3.csv.gz", compression="gzip", index=False)
 
+    print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
+
 def preprocess(save=False):
+    print("\n----> START " + str(sys._getframe().f_code.co_name) )
+
     start = time.time()
     dtype_dict = {"Semana": np.uint8, 'Agencia_ID': np.uint16, 'Canal_ID': np.uint8,
                   'Ruta_SAK': np.uint16, 'Cliente_ID': np.uint32, 'Producto_ID': np.uint16,
@@ -199,7 +208,7 @@ def preprocess(save=False):
                   "Dev_uni_proxima": np.uint32, "Dev_proxima": np.float32}
 
     train = pd.read_csv("C:/datasets/bimbo_inventory_demand/train.csv.zip", compression="zip", dtype=dtype_dict)
-    test = pd.read_csv("../data/test.csv.zip", compression="zip", dtype=dtype_dict) #TODOTODO: AQUI VOY!
+    test = pd.read_csv("C:/datasets/bimbo_inventory_demand/test.csv.zip", compression="zip", dtype=dtype_dict)
     # train = train.sample(100000)
     # test = test.sample(100000)
 
@@ -224,12 +233,12 @@ def preprocess(save=False):
     # print("train obs: {}".format(len(train)))
 
     # read data files and create new client ids
-    town = pd.read_csv("../data/town_state.csv.zip", compression="zip")
-    product = pd.read_csv("../data/producto_tabla.csv.zip", compression="zip")
-    client = pd.read_csv("../data/cliente_tabla.csv.zip", compression="zip")
-    client2 = pd.read_csv("../data/cliente_tabla2.csv.gz")
+    town = pd.read_csv("C:/datasets/bimbo_inventory_demand/town_state.csv.zip", compression="zip")
+    product = pd.read_csv("C:/datasets/bimbo_inventory_demand/producto_tabla.csv.zip", compression="zip")
+    client = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
+    client2 = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz")
     client2.rename(columns={"NombreCliente2": "client_name2"}, inplace=True)
-    client3 = pd.read_csv("../data/cliente_tabla3.csv.gz")
+    client3 = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla3.csv.gz")
     print("Reading data took {:.1f}min".format((time.time()-start)/60))
     new_start = time.time()
 
@@ -437,9 +446,13 @@ def preprocess(save=False):
         id.to_hdf("id.h5", 'id', format='t', complevel=5, complib='zlib')
         test.to_hdf("test.h5", 'test', format='t', complevel=5, complib='zlib')
     print("Preprocessing took {:.1f}min".format((time.time() - start) / 60))
+
+    print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
     return train, train_target, test, id
 
 def xgboost_train(train=None, train_target=None, test=None, id=None, load=False):
+    print("\n----> START " + str(sys._getframe().f_code.co_name) )
+
     print("Start training")
     start = time.time()
     if load:
@@ -472,8 +485,8 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     dtrain = xgb.DMatrix(train, train_target)
     watchlist = [(dtrain, "train")]
     gbm = xgb.train(param, dtrain, num_round, evals=watchlist, verbose_eval=True)
-    os.makedirs("../output", exist_ok=True)
-    xgbfir.saveXgbFI(gbm, TopK=300, OutputXlsxFile="../output/XgbFeatureInteractions.xlsx")
+    os.makedirs("C:/datasets/bimbo_inventory_demand/output", exist_ok=True)
+    xgbfir.saveXgbFI(gbm, TopK=300, OutputXlsxFile="C:/datasets/bimbo_inventory_demand/output/XgbFeatureInteractions.xlsx")
 
     gain = pd.Series(gbm.get_score(importance_type="gain")) * pd.Series(gbm.get_score(importance_type="weight"))
     gain = gain.reset_index()
@@ -482,9 +495,9 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     gain.plot(kind="barh", x="features", y="gain", legend=False, figsize=(10, 20))
     plt.title("XGBoost Total Gain")
     plt.xlabel("Total Gain")
-    plt.savefig("../output/XGBOOST_GAIN_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".png",
+    plt.savefig("C:/datasets/bimbo_inventory_demand/output/XGBOOST_GAIN_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".png",
                          bbox_inches="tight", pad_inches=1)
-    gain.sort_values(by="gain", ascending=False).to_csv("../output/Gain_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv")
+    gain.sort_values(by="gain", ascending=False).to_csv("C:/datasets/bimbo_inventory_demand/output/Gain_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv")
 
     dtest = xgb.DMatrix(test)
     y_pred = gbm.predict(dtest)
@@ -492,10 +505,11 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     cols = submission.columns.tolist()
     cols = cols[1:] + cols[0:1]
     submission = submission[cols]
-    os.makedirs("../subm", exist_ok=True)
-    submission.to_csv("../subm/submission_xgboost_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv.gz", compression="gzip",
+    os.makedirs("C:/datasets/bimbo_inventory_demand/subm", exist_ok=True)
+    submission.to_csv("C:/datasets/bimbo_inventory_demand/subm/submission_xgboost_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv.gz", compression="gzip",
                       index=False)
     print("Training and submitting took {:.1f}min".format((time.time() - start) / 60))
+    print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
 
 def XGBOOST_starter(debug):
