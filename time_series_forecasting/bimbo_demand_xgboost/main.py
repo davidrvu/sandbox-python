@@ -192,7 +192,6 @@ def client_anaylsis2():
     def filter_remaining(vf2):
         print("filter_remaining ...")
         def function_word(data):
-            print("function_word ...")
             # Avoid the single-words created so far by checking for upper-case
             if (data.isupper()) and (data != "NO IDENTIFICADO"):
                 return 'Individual'
@@ -215,7 +214,9 @@ def preprocess(save=False):
                   'Demanda_uni_equil': np.uint32, "Venta_hoy": np.float32, "Venta_uni_hoy": np.uint32,
                   "Dev_uni_proxima": np.uint32, "Dev_proxima": np.float32}
 
+    print("Reading train ...")
     train = pd.read_csv("C:/datasets/bimbo_inventory_demand/train.csv.zip", compression="zip", dtype=dtype_dict)
+    print("Reading test ...")
     test = pd.read_csv("C:/datasets/bimbo_inventory_demand/test.csv.zip", compression="zip", dtype=dtype_dict)
     # train = train.sample(100000)
     # test = test.sample(100000)
@@ -223,6 +224,7 @@ def preprocess(save=False):
     # We calculate out-of-sample mean features from most of the training data and only train from the samples in week 9.
     # Out-of-sample mean features for training are calculated from all weeks before week 9 and for the test set from
     # all weeks including week 9
+    print("Calculate out-of-sample mean features ...")
     mean_dataframes = {}
     mean_dataframes["train"] = train[train["Semana"]<9].copy()
     mean_dataframes["test"] = train.copy()
@@ -241,11 +243,16 @@ def preprocess(save=False):
     # print("train obs: {}".format(len(train)))
 
     # read data files and create new client ids
+    print("Reading town file ...")
     town = pd.read_csv("C:/datasets/bimbo_inventory_demand/town_state.csv.zip", compression="zip")
+    print("Reading product file ...")
     product = pd.read_csv("C:/datasets/bimbo_inventory_demand/producto_tabla.csv.zip", compression="zip")
+    print("Reading client file ...")
     client = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
+    print("Reading client2 file ...")
     client2 = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz")
     client2.rename(columns={"NombreCliente2": "client_name2"}, inplace=True)
+    print("Reading client3 file ...")
     client3 = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla3.csv.gz")
     print("Reading data took {:.1f}min".format((time.time()-start)/60))
     new_start = time.time()
@@ -350,6 +357,7 @@ def preprocess(save=False):
 
     only_in_train = ["sales_unit_this_week", "sales_this_week", "returns_unit_next_week", "returns_next_week"]
 
+    print("get_mean by columns ...")
     for columns in column_combinations:
         for var in only_in_train:
             train = get_mean(mean_dataframes["train"], train, columns, var)
@@ -389,6 +397,7 @@ def preprocess(save=False):
     train['null_count'] = train.isnull().sum(axis=1).tolist()
     test['null_count'] = test.isnull().sum(axis=1).tolist()
 
+    print("for feat ...")
     for feat in ["sales_depot_id", "sales_channel_id", "route_id", "town", "state", "client_id", "client_name",
                  "client_name2", "client_name3", "product_id", "brand", "brand2", "short_name"]:
         for dataset in dataset_list:
@@ -409,6 +418,7 @@ def preprocess(save=False):
         else:
             del train[feat]
             del test[feat]
+
     print("Engineering of mean features took {:.1f}min".format((time.time() - new_start) / 60))
     # drop if feature has small overall gain for small version. These are pre-optimized.
     drop_list = ["sum_client_name3","log_demand_std_product_id_route_id",
@@ -457,6 +467,7 @@ def preprocess(save=False):
     id = pd.DataFrame(test["id"])
     test = test.drop("id", axis=1)
     if save:
+        print("Writing HDF ... ")
         train.to_hdf("train.h5", 'train', format='t', complevel=5, complib='zlib')
         pd.DataFrame(train_target).to_hdf("train_target.h5", 'train_target', format='t', complevel=5, complib='zlib')
         id.to_hdf("id.h5", 'id', format='t', complevel=5, complib='zlib')
@@ -472,12 +483,14 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     print("Start training ...")
     start = time.time()
     if load:
+        print("Reading HDF ... ")
         train = pd.read_hdf("train.h5", "train")
         test = pd.read_hdf("test.h5", "test")
         id = pd.read_hdf("id.h5", "id")
         train_target = pd.read_hdf("train_target.h5", "train_target")
 
     # optimized hyperparameters
+    print("Optimized hyperparameters ...")
     param = {}
     param["objective"] = "reg:linear"
     param["booster"] = "gbtree"
@@ -502,17 +515,20 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     watchlist = [(dtrain, "train")]
     gbm = xgb.train(param, dtrain, num_round, evals=watchlist, verbose_eval=True)
     os.makedirs("C:/datasets/bimbo_inventory_demand/output", exist_ok=True)
+    print("Writing saveXgbFI ...")
     xgbfir.saveXgbFI(gbm, TopK=300, OutputXlsxFile="C:/datasets/bimbo_inventory_demand/output/XgbFeatureInteractions.xlsx")
 
     gain = pd.Series(gbm.get_score(importance_type="gain")) * pd.Series(gbm.get_score(importance_type="weight"))
     gain = gain.reset_index()
     gain.columns = ["features", "gain"]
     gain.sort_values(by="gain", inplace=True)
+
+    print("Plot ...")
     gain.plot(kind="barh", x="features", y="gain", legend=False, figsize=(10, 20))
     plt.title("XGBoost Total Gain")
     plt.xlabel("Total Gain")
-    plt.savefig("C:/datasets/bimbo_inventory_demand/output/XGBOOST_GAIN_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".png",
-                         bbox_inches="tight", pad_inches=1)
+    plt.savefig("C:/datasets/bimbo_inventory_demand/output/XGBOOST_GAIN_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".png", bbox_inches="tight", pad_inches=1)
+    print("Writing Gain csv")
     gain.sort_values(by="gain", ascending=False).to_csv("C:/datasets/bimbo_inventory_demand/output/Gain_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv")
 
     dtest = xgb.DMatrix(test)
@@ -522,8 +538,8 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
     cols = cols[1:] + cols[0:1]
     submission = submission[cols]
     os.makedirs("C:/datasets/bimbo_inventory_demand/subm", exist_ok=True)
-    submission.to_csv("C:/datasets/bimbo_inventory_demand/subm/submission_xgboost_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv.gz", compression="gzip",
-                      index=False)
+    print("Writing submission_xgboost csv ...")
+    submission.to_csv("C:/datasets/bimbo_inventory_demand/subm/submission_xgboost_" + time.strftime("%Y_%m_%d_%H_%M_%S") + ".csv.gz", compression="gzip", index=False)
     print("Training and submitting took {:.1f}min".format((time.time() - start) / 60))
     print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
