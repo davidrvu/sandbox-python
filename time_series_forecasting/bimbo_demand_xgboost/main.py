@@ -27,6 +27,7 @@ def client_anaylsis():
     """
     print("\n----> START " + str(sys._getframe().f_code.co_name) )
     # clean duplicate spaces in client names
+    print("Reading client_df ... ")
     #client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
     client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv")
     client_df["NombreCliente"] = client_df["NombreCliente"].str.lower()
@@ -108,12 +109,14 @@ def client_anaylsis():
                     "^(7\seleven)\s.*", "^(7\s24)\s.*"]
 
     client_df["NombreCliente2"] = client_df["NombreCliente"]
+    print("Transform client_df ...")
     for var in special_list:
         client_df[var] = client_df["NombreCliente"].str.extract(var, expand=False).str.upper()
         replace = client_df.loc[~client_df[var].isnull(), var]
         client_df.loc[~client_df[var].isnull(),"NombreCliente2"] = replace
         client_df.drop(var, axis=1, inplace=True)
     client_df.drop("NombreCliente", axis=1, inplace=True)
+    print("Writing client_df ... ")
     client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz", compression="gzip", index=False)
     print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
@@ -124,6 +127,7 @@ def client_anaylsis2():
     """
     print("\n----> START " + str(sys._getframe().f_code.co_name) )
 
+    print("Reading client_df ... ")
     client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
     # clean duplicate spaces in client names
     client_df["NombreCliente"] = client_df["NombreCliente"].str.upper()
@@ -137,6 +141,7 @@ def client_anaylsis2():
     # In other words, the first filters to occur have a bigger priority.
 
     def filter_specific(vf2):
+        print("filter_specific ...")
         # Known Large Company / Special Group Types
         vf2['NombreCliente'] = vf2['NombreCliente'].str.replace('.*REMISION.*', 'Consignment')
         vf2['NombreCliente'] = vf2['NombreCliente'].replace(['.*WAL MART.*', '.*SAMS CLUB.*'], 'Walmart', regex=True)
@@ -175,6 +180,7 @@ def client_anaylsis2():
     # not appear in a person's name.
     # i.e. "Individuals" should not contain any participles or numbers in their names.
     def filter_participle(vf2):
+        print("filter_participle ...")
         vf2['NombreCliente'] = vf2['NombreCliente'].replace([
             '.*LA .*', '.*EL .*', '.*DE .*', '.*LOS .*', '.*DEL .*', '.*Y .*', '.*SAN .*', '.*SANTA .*', \
             '.*AG .*', '.*LAS .*', '.*MI .*', '.*MA .*', '.*II.*', '.*[0-9]+.*' \
@@ -184,7 +190,9 @@ def client_anaylsis2():
     # Any remaining entries should be "Individual" Named Clients, there are some outliers.
     # More specific filters could be used in order to reduce the percentage of outliers in this final set.
     def filter_remaining(vf2):
+        print("filter_remaining ...")
         def function_word(data):
+            print("function_word ...")
             # Avoid the single-words created so far by checking for upper-case
             if (data.isupper()) and (data != "NO IDENTIFICADO"):
                 return 'Individual'
@@ -243,6 +251,7 @@ def preprocess(save=False):
     new_start = time.time()
 
     # Feature Extraction
+    print("Feature Extraction ...")
     prod_split = product.NombreProducto.str.split(r"(\s\d+\s?(kg|Kg|g|G|in|ml|pct|p|P|Reb))")
     product["product"] = prod_split.apply(lambda x: x[0])
     product["brand2"] = product.NombreProducto.str.extract("^.+\s(\D+) \d+$", expand=False)
@@ -262,11 +271,14 @@ def preprocess(save=False):
     product.drop(["NombreProducto", "product"], axis=1, inplace=True)
 
     # Drop duplicate clients
+    print("Drop duplicate clients ...")
     client = client.drop_duplicates(subset="Cliente_ID")
     # clean duplicate spaces in client names
+    print("Clean duplicate spaces in client names ...")
     client["NombreCliente"] = client["NombreCliente"].apply(lambda x: " ".join(x.split()))
 
     # Join everything
+    print("Join everything ...")
     dataset_list = ["train", "test"]
     for dataset in dataset_list:
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(town, how="left", on="Agencia_ID")
@@ -293,12 +305,14 @@ def preprocess(save=False):
                           "Dev_uni_proxima": "returns_unit_next_week", "Dev_proxima": "returns_next_week"}
 
     # rename columns for convenience
+    print("Rename columns for convenience ...")
     for dataset in dataset_list:
         mean_dataframes[dataset].rename(columns=rename_dict, inplace=True)
     train.rename(columns=rename_dict, inplace=True)
     test.rename(columns=rename_dict, inplace=True)
 
     # transform target demand to log scale
+    print("Transform target demand to log scale ...")
     for dataset in dataset_list:
         mean_dataframes[dataset]["log_demand"] = np.log1p(mean_dataframes[dataset]["target"])
     train["log_demand"] = np.log1p(train["target"])
@@ -309,6 +323,7 @@ def preprocess(save=False):
     new_start = time.time()
 
     def get_mean(mean_dataset, dataset, columns, target):
+        print("get_mean ...")
         tempTable = mean_dataset[columns + [target]].groupby(columns).agg(
             ["mean", "std", "median"])[target]
         name = "_".join(columns)
@@ -323,6 +338,7 @@ def preprocess(save=False):
         return dataset
 
     # calculate means of variables that are only available in the training set
+    print("Calculate means of variables that are only available in the training set ...")
     train = get_mean(mean_dataframes["train"], train,
                      ["product_id", "client_id", "sales_depot_id", "route_id", "short_name"], "sales_unit_this_week")
     test = get_mean(mean_dataframes["test"], test,
@@ -364,8 +380,8 @@ def preprocess(save=False):
                            ["product_id", "client_id", "route_id"], ["product_id", "client_name"],
                            ["short_name", "client_id"]]
 
-    # calculate out-of-sample means of the target feature over combinations of categorical features (product_id,
-    # client_id, etc.)
+    # calculate out-of-sample means of the target feature over combinations of categorical features (product_id, client_id, etc.)
+    print("Calculate out-of-sample ...")
     for columns in column_combinations:
         train = get_mean(mean_dataframes["train"], train, columns, "log_demand")
         test = get_mean(mean_dataframes["test"], test, columns, "log_demand")
@@ -453,7 +469,7 @@ def preprocess(save=False):
 def xgboost_train(train=None, train_target=None, test=None, id=None, load=False):
     print("\n----> START " + str(sys._getframe().f_code.co_name) )
 
-    print("Start training")
+    print("Start training ...")
     start = time.time()
     if load:
         train = pd.read_hdf("train.h5", "train")
