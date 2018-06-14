@@ -26,7 +26,7 @@ def client_anaylsis():
     The idea here is to unify the client ID of several different customers to more broad categories.
     """
     # clean duplicate spaces in client names
-    client_df = pd.read_csv("../data/cliente_tabla.csv.zip", compression="zip")
+    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
     client_df["NombreCliente"] = client_df["NombreCliente"].str.lower()
     client_df["NombreCliente"] = client_df["NombreCliente"].apply(lambda x: " ".join(x.split()))
     client_df = client_df.drop_duplicates(subset="Cliente_ID")
@@ -112,14 +112,14 @@ def client_anaylsis():
         client_df.loc[~client_df[var].isnull(),"NombreCliente2"] = replace
         client_df.drop(var, axis=1, inplace=True)
     client_df.drop("NombreCliente", axis=1, inplace=True)
-    client_df.to_csv("../data/cliente_tabla2.csv.gz", compression="gzip", index=False)
+    client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz", compression="gzip", index=False)
 
 def client_anaylsis2():
     """
     The idea here is to unify the client ID of several different customers to more broad categories in another
     different way
     """
-    client_df = pd.read_csv("../data/cliente_tabla.csv.zip", compression="zip")
+    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
     # clean duplicate spaces in client names
     client_df["NombreCliente"] = client_df["NombreCliente"].str.upper()
     client_df["NombreCliente"] = client_df["NombreCliente"].apply(lambda x: " ".join(x.split()))
@@ -189,7 +189,7 @@ def client_anaylsis2():
         vf2['NombreCliente'] = vf2['NombreCliente'].map(function_word)
     filter_remaining(client_df)
     client_df.rename(columns={"NombreCliente": "client_name3"}, inplace=True)
-    client_df.to_csv("../data/cliente_tabla3.csv.gz", compression="gzip", index=False)
+    client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla3.csv.gz", compression="gzip", index=False)
 
 def preprocess(save=False):
     start = time.time()
@@ -198,8 +198,8 @@ def preprocess(save=False):
                   'Demanda_uni_equil': np.uint32, "Venta_hoy": np.float32, "Venta_uni_hoy": np.uint32,
                   "Dev_uni_proxima": np.uint32, "Dev_proxima": np.float32}
 
-    train = pd.read_csv("../data/train.csv.zip", compression="zip", dtype=dtype_dict)
-    test = pd.read_csv("../data/test.csv.zip", compression="zip", dtype=dtype_dict)
+    train = pd.read_csv("C:/datasets/bimbo_inventory_demand/train.csv.zip", compression="zip", dtype=dtype_dict)
+    test = pd.read_csv("../data/test.csv.zip", compression="zip", dtype=dtype_dict) #TODOTODO: AQUI VOY!
     # train = train.sample(100000)
     # test = test.sample(100000)
 
