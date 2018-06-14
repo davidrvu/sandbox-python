@@ -37,9 +37,10 @@ def main():
     print("    PERFORMANCE  pd.read_csv pd.read_csv(ZIP) - BY DAVIDRVU")
     print("="*60)
 
-    y_time_zip  = [0]*6
-    y_time      = [0]*6
-    x_file_size = [0]*6
+    n_data      = 5
+    y_time_zip  = [0]*n_data
+    y_time      = [0]*n_data
+    x_file_size = [0]*n_data
 
     y_time_zip[0]  = perf_read_csv_zip("C:/datasets/bimbo_inventory_demand/town_state.csv.zip")
     y_time[0]      = perf_read_csv("C:/datasets/bimbo_inventory_demand/town_state.csv")
@@ -61,9 +62,9 @@ def main():
     y_time[4]      = perf_read_csv("C:/datasets/bimbo_inventory_demand/test.csv")
     x_file_size[4] = file_size_MB("C:/datasets/bimbo_inventory_demand/test.csv")
 
-    y_time_zip[5]  = perf_read_csv_zip("C:/datasets/bimbo_inventory_demand/train.csv.zip")
-    y_time[5]      = perf_read_csv("C:/datasets/bimbo_inventory_demand/train.csv")
-    x_file_size[5] = file_size_MB("C:/datasets/bimbo_inventory_demand/train.csv")
+    #y_time_zip[5]  = perf_read_csv_zip("C:/datasets/bimbo_inventory_demand/train.csv.zip")
+    #y_time[5]      = perf_read_csv("C:/datasets/bimbo_inventory_demand/train.csv")
+    #x_file_size[5] = file_size_MB("C:/datasets/bimbo_inventory_demand/train.csv")
 
 
     print(y_time_zip)
@@ -94,6 +95,7 @@ def main():
         title="Pandas read_csv performance (ZIP files)",
         xaxis=dict(
             title='File size [MB]',
+            type='log',
             titlefont=dict(
                 family='Arial, sans-serif',
                 size=18,
@@ -104,6 +106,7 @@ def main():
         ),
         yaxis=dict(
             title='read_csv time [seg]',
+            #type='log',
             titlefont=dict(
                 family='Arial, sans-serif',
                 size=18,
