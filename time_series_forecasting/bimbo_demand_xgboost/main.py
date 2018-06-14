@@ -1,3 +1,4 @@
+# DAVIDRVU 2018
 
 # SOURCE CHALLENGE: https://www.kaggle.com/c/grupo-bimbo-inventory-demand
 # SOURCE SOLUTION: https://github.com/DeepVoltaire/Grupo-Bimbo-inventory-demand/blob/master/src/preprocc_train_submit.py
@@ -15,6 +16,8 @@ import xgboost as xgb
 import xgbfir
 import pdb
 import time
+import argparse
+import sys
 
 np.random.seed(1337)
 
@@ -494,12 +497,55 @@ def xgboost_train(train=None, train_target=None, test=None, id=None, load=False)
                       index=False)
     print("Training and submitting took {:.1f}min".format((time.time() - start) / 60))
 
-client_anaylsis()
-client_anaylsis2()
-train, train_target, test, id = preprocess()
-xgboost_train(train, train_target, test, id)
 
-#TODOTODO: plotly
-#TODOTODO: MAIN WITH ARGUMENTS
-#TODOTODO: .BAT
-#TODOTODO: CAMBIAR DIRECTORIOS DE DATA
+def XGBOOST_starter(debug):
+    print("\n----> START " + str(sys._getframe().f_code.co_name) )
+
+    client_anaylsis()
+    client_anaylsis2()
+    train, train_target, test, id = preprocess()
+    xgboost_train(train, train_target, test, id)
+
+    print("----> END " + str(sys._getframe().f_code.co_name) + "\n")
+
+def main():
+    print("_________________________________________________________")
+    print("_____________  MAIN XGBOOST STARTER  ____________________")
+
+    #TODOTODO: GRAFICOS PLOTLY
+    #TODOTODO: .BAT
+	#TODOTODO: CAMBIAR DIRECTORIOS DE DATA
+
+    parser = argparse.ArgumentParser(description='Process some arguments.')
+    parser.add_argument('--debug',       type=int,  default=0,     help='Debug')
+    #parser.add_argument('--train_file',  type=str,  default=None,  help='Archivo train')
+    #parser.add_argument('--test_file',   type=str,  default=None,  help='Archivo test')
+    #parser.add_argument('--items_file',  type=str,  default=None,  help='Archivo items')
+    #parser.add_argument('--output_file', type=str,  default=None,  help='Archivo output')
+
+    args = parser.parse_args()
+    debug       = args.debug
+    #train_file  = args.train_file
+    #test_file   = args.test_file
+    #items_file  = args.items_file
+    #output_file = args.output_file
+
+    print("_________________________________________________________")
+    print("_________________ARGUMENTS_______________________________")
+    print("debug       = " + str(debug))
+    #print("train_file  = " + str(train_file))
+    #print("test_file   = " + str(test_file))
+    #print("items_file  = " + str(items_file))
+    #print("output_file = " + str(output_file))
+
+    start_time = time.time()
+    XGBOOST_starter(debug)
+    end_time   = time.time()
+
+    total_time = end_time - start_time
+    print("total_time = " + str(round(total_time,4)) + "[s].")
+
+    print("DONE!")
+
+if __name__ == "__main__":
+    main()
