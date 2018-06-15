@@ -111,10 +111,12 @@ def client_anaylsis():
     client_df["NombreCliente2"] = client_df["NombreCliente"]
     print("Transform client_df ...")
     for var in special_list:
+        print("        Transform var = " + str(var) + "                                    ", end="\r", flush=True)
         client_df[var] = client_df["NombreCliente"].str.extract(var, expand=False).str.upper()
         replace = client_df.loc[~client_df[var].isnull(), var]
         client_df.loc[~client_df[var].isnull(),"NombreCliente2"] = replace
         client_df.drop(var, axis=1, inplace=True)
+    print("client_df drop ...                                                 ")
     client_df.drop("NombreCliente", axis=1, inplace=True)
     print("Writing client_df ... ")
     client_df.to_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla2.csv.gz", compression="gzip", index=False)
@@ -288,20 +290,36 @@ def preprocess(save=False):
     print("Join everything ...")
     dataset_list = ["train", "test"]
     for dataset in dataset_list:
+        print("        merge dataset = " + str(dataset) + " | town")
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(town, how="left", on="Agencia_ID")
+        print("        merge dataset = " + str(dataset) + " | product")
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(product, how="left", on="Producto_ID")
+        print("        merge dataset = " + str(dataset) + " | client")
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(client, how="left", on="Cliente_ID")
+        print("        merge dataset = " + str(dataset) + " | client2")
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(client2, how="left", on="Cliente_ID")
+        print("        merge dataset = " + str(dataset) + " | client3") # EN TEST Memory Error (8 GB RAM)
         mean_dataframes[dataset] = mean_dataframes[dataset].merge(client3, how="left", on="Cliente_ID")
+    print("        more merge dataset = train | town")
     train = train.merge(town, how="left", on="Agencia_ID")
+    print("        more merge dataset = train | product")
     train = train.merge(product, how="left", on="Producto_ID")
+    print("        more merge dataset = train | client")
     train = train.merge(client, how="left", on="Cliente_ID")
+    print("        more merge dataset = train | client2")
     train = train.merge(client2, how="left", on="Cliente_ID")
+    print("        more merge dataset = train | client3")
     train = train.merge(client3, how="left", on="Cliente_ID")
+
+    print("        more merge dataset = test | town")
     test = test.merge(town, how="left", on="Agencia_ID")
+    print("        more merge dataset = test | product")
     test = test.merge(product, how="left", on="Producto_ID")
+    print("        more merge dataset = test | client")
     test = test.merge(client, how="left", on="Cliente_ID")
+    print("        more merge dataset = test | client2")
     test = test.merge(client2, how="left", on="Cliente_ID")
+    print("        more merge dataset = test | client3")
     test = test.merge(client3, how="left", on="Cliente_ID")
 
     rename_dict = {"Semana": "week", "Agencia_ID": "sales_depot_id", "Canal_ID": "sales_channel_id",
@@ -314,6 +332,7 @@ def preprocess(save=False):
     # rename columns for convenience
     print("Rename columns for convenience ...")
     for dataset in dataset_list:
+        print("        rename columns in dataset = " + str(dataset))
         mean_dataframes[dataset].rename(columns=rename_dict, inplace=True)
     train.rename(columns=rename_dict, inplace=True)
     test.rename(columns=rename_dict, inplace=True)
@@ -321,6 +340,7 @@ def preprocess(save=False):
     # transform target demand to log scale
     print("Transform target demand to log scale ...")
     for dataset in dataset_list:
+        print("        Transform target in dataset = " + str(dataset))
         mean_dataframes[dataset]["log_demand"] = np.log1p(mean_dataframes[dataset]["target"])
     train["log_demand"] = np.log1p(train["target"])
     train_target = train["log_demand"]
@@ -330,9 +350,8 @@ def preprocess(save=False):
     new_start = time.time()
 
     def get_mean(mean_dataset, dataset, columns, target):
-        print("get_mean ...")
-        tempTable = mean_dataset[columns + [target]].groupby(columns).agg(
-            ["mean", "std", "median"])[target]
+        print("        get_mean ...")
+        tempTable = mean_dataset[columns + [target]].groupby(columns).agg(["mean", "std", "median"])[target]
         name = "_".join(columns)
         tempTable = tempTable.rename(columns={
             "count": target + "_count_" + name,
@@ -346,10 +365,8 @@ def preprocess(save=False):
 
     # calculate means of variables that are only available in the training set
     print("Calculate means of variables that are only available in the training set ...")
-    train = get_mean(mean_dataframes["train"], train,
-                     ["product_id", "client_id", "sales_depot_id", "route_id", "short_name"], "sales_unit_this_week")
-    test = get_mean(mean_dataframes["test"], test,
-                    ["product_id", "client_id", "sales_depot_id", "route_id", "short_name"], "sales_unit_this_week")
+    train = get_mean(mean_dataframes["train"], train,["product_id", "client_id", "sales_depot_id", "route_id", "short_name"], "sales_unit_this_week")
+    test = get_mean(mean_dataframes["test"], test,["product_id", "client_id", "sales_depot_id", "route_id", "short_name"], "sales_unit_this_week")
 
     column_combinations = [["product_id", "client_id", "sales_depot_id", "route_id"], ["product_id", "route_id"],
                            ["short_name", "client_id", "sales_depot_id"], ["product_id"], ["short_name", "client_id"],
@@ -398,13 +415,12 @@ def preprocess(save=False):
     test['null_count'] = test.isnull().sum(axis=1).tolist()
 
     print("for feat ...")
-    for feat in ["sales_depot_id", "sales_channel_id", "route_id", "town", "state", "client_id", "client_name",
-                 "client_name2", "client_name3", "product_id", "brand", "brand2", "short_name"]:
+    for feat in ["sales_depot_id", "sales_channel_id", "route_id", "town", "state", "client_id", "client_name","client_name2", "client_name3", "product_id", "brand", "brand2", "short_name"]:
         for dataset in dataset_list:
+            print("        feat = " + str(feat) + " | dataset = " + str(dataset))
             mean_train = mean_dataframes[dataset]
             # LOG DEMAND MEANS
-            tempTable = mean_train[[feat, "log_demand"]].groupby(feat).agg(["count", "mean", "std", "sum",
-                                                                            "median"]).log_demand
+            tempTable = mean_train[[feat, "log_demand"]].groupby(feat).agg(["count", "mean", "std", "sum","median"]).log_demand
             tempTable = tempTable.rename(
                 columns={"count": "count_"+feat, "mean": "mean_"+feat, "std": "sd_"+feat, "sum": "sum_"+feat,
                          "median": "median_" + feat})
