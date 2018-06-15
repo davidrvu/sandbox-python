@@ -28,8 +28,8 @@ def client_anaylsis():
     print("\n----> START " + str(sys._getframe().f_code.co_name) )
     # clean duplicate spaces in client names
     print("Reading client_df ... ")
-    #client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
-    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv")
+    client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv.zip", compression="zip")
+    #client_df = pd.read_csv("C:/datasets/bimbo_inventory_demand/cliente_tabla.csv")
     client_df["NombreCliente"] = client_df["NombreCliente"].str.lower()
     client_df["NombreCliente"] = client_df["NombreCliente"].apply(lambda x: " ".join(x.split()))
     client_df = client_df.drop_duplicates(subset="Cliente_ID")
