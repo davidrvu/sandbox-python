@@ -408,8 +408,9 @@ def preprocess(save=False):
     # calculate out-of-sample means of the target feature over combinations of categorical features (product_id, client_id, etc.)
     print("Calculate out-of-sample ...")
     for columns in column_combinations:
+        print("    columns = " + str(columns))
         train = get_mean(mean_dataframes["train"], train, columns, "log_demand")
-        test = get_mean(mean_dataframes["test"], test, columns, "log_demand")
+        test = get_mean(mean_dataframes["test"], test, columns, "log_demand") # Memory Error (16 GB RAM)
 
     train['null_count'] = train.isnull().sum(axis=1).tolist()
     test['null_count'] = test.isnull().sum(axis=1).tolist()
