@@ -605,7 +605,7 @@ def main():
     try:
         XGBOOST_starter(debug)
     except Exception as e:
-        current_time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        current_time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         print(str(current_time_str) + " >>> ERROR e = " + str(e))
     end_time   = time.time()
 
