@@ -602,7 +602,11 @@ def main():
     #print("output_file = " + str(output_file))
 
     start_time = time.time()
-    XGBOOST_starter(debug)
+    try:
+        XGBOOST_starter(debug)
+    except Exception as e:
+        current_time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        print(str(current_time_str) + " >>> ERROR e = " + str(e))
     end_time   = time.time()
 
     total_time = end_time - start_time
