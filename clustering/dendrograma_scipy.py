@@ -31,10 +31,29 @@ fig = plt.figure(figsize=(25, 10))
 dn = dendrogram(Z, labels = labels_text)
 plt.show()
 
+# https://www.rdocumentation.org/packages/arules/versions/1.6-1/topics/dissimilarity
+# https://stackoverflow.com/questions/35639571/python-pandas-distance-matrix-using-jaccard-similarity
+
 os.system("pause")
 
 ###############################################
 
+## TODOTODO: DENDROGRAMAS PLOTLY
+
+
+#import plotly.plotly as py
+#import plotly.figure_factory as ff
+
+#import numpy as np
+
+#X = np.random.rand(10, 10)
+#names = ['Jack', 'Oxana', 'John', 'Chelsea', 'Mark', 'Alice', 'Charlie', 'Rob', 'Lisa', 'Lily']
+#fig = ff.create_dendrogram(X, orientation='left', labels=names)
+#fig['layout'].update({'width':800, 'height':800})
+#py.iplot(fig, filename='dendrogram_with_labels')
+
+
+###############################################
 
 
 print("Running dendrograma_scipy.py ...")
