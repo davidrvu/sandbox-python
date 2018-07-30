@@ -38,6 +38,27 @@ os.system("pause")
 
 ###############################################
 
+from scipy.spatial.distance import squareform
+
+print("DISTANCIA TODOS CON TODOS")
+currentLabels = ["A", "B", "C"]
+print("currentLabels = ")
+print(currentLabels)
+mat = np.array([[0.0, 2.0, 0.1], [2.0, 0.0, 2.0], [0.1, 2.0, 0.0]])
+print("mat = ")
+print(mat)
+dists = squareform(mat)
+print("dists = ")
+print(dists)
+linkage_matrix = linkage(dists, "single")
+dendrogram(linkage_matrix, labels=currentLabels)
+plt.title("test")
+plt.show()
+
+os.system("pause")
+
+###############################################
+
 ## TODOTODO: DENDROGRAMAS PLOTLY
 
 
