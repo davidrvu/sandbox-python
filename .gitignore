@@ -1,5 +1,8 @@
+build/
+dist/
 *~
 *.pyc
 *.pyo
 *.asv
+*.spec
 */data_base
