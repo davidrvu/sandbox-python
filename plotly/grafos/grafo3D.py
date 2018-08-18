@@ -6,8 +6,9 @@ import igraph as ig
 import json
 import urllib.request
 
-# OJO: INSTALAR igraph para Windows
-# python -m pip install C:\Users\drvalenzuela\Downloads\python_igraph-0.7.1.post6-cp36-cp36m-win_amd64.whl
+# OJO: INSTALAR igraph para Windows:
+# DESCARGAR: https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-igraph
+# INSTALAR : python -m pip install C:\Users\drvalenzuela\Downloads\python_igraph-0.7.1.post6-cp36-cp36m-win_amd64.whl
 
 def main():
     print("=========================")
