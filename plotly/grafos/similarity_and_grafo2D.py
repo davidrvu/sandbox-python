@@ -32,13 +32,12 @@ def fromAffinityToDendrogram_plotly(debug, affinity_mat, itemUnique, file_out):
     printDeb(debug, "----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
 
-def fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, file_out):
+def fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, th_dist, file_out):
     printDeb(debug, "\n----> START " + str(sys._getframe().f_code.co_name) )
 
     #print("item_dissimilarity_jaccard = ")
     #print(item_dissimilarity_jaccard)
 
-    th_dist = 0.03 #0.04 #0.1 #0.3 #0.5 # 0.0
     conn_indices = np.where(item_dissimilarity_jaccard > th_dist)
 
     # get the weights corresponding to these indices
@@ -125,36 +124,37 @@ def fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, file_ou
               )
 
     layout = Layout(
-             title="Similarity 2D Graph | totalNodes = " + str(totalNodes),
-             width=1000,
-             height=1000,
-             showlegend=False,
-             xaxis = dict(axis),
-             yaxis = dict(axis),
-             scene=dict(
-                 xaxis=dict(axis),
-                 yaxis=dict(axis),
-                 zaxis=dict(axis),
-            ),
-         margin=dict(
-            t=100
-        ),
-        hovermode='closest',
-        annotations=[
-               dict(
-               showarrow=False,
-                text="th_dist = " + str(th_dist),
-                xref='paper',
-                yref='paper',
-                x=0,
-                y=0.05,
-                xanchor='left',
-                yanchor='bottom',
-                font=dict(
-                size=14
-                )
-                )
-            ],    )
+                    title="Similarity 2D Graph | totalNodes = " + str(totalNodes) + " | th_dist = " + str(th_dist),
+                    width=1000,
+                    height=1000,
+                    showlegend=False,
+                    xaxis = dict(axis),
+                    yaxis = dict(axis),
+                    scene=dict(
+                        xaxis=dict(axis),
+                        yaxis=dict(axis),
+                        zaxis=dict(axis),
+                    ),
+                    margin=dict(
+                        t=100
+                    ),
+                    hovermode='closest',
+                    #annotations=[
+                    #            dict(
+                    #                showarrow=False,
+                    #                text="th_dist = " + str(th_dist),
+                    #                xref='paper',
+                    #                yref='paper',
+                    #                x=0,
+                    #                y=0.05,
+                    #                xanchor='left',
+                    #                yanchor='bottom',
+                    #                font=dict(
+                    #                    size=14
+                    #                )
+                    #            )
+                    #],    
+            )
 
     data=[trace1, trace2]
 
@@ -187,6 +187,8 @@ def main():
     #userHeader = "ID_NAV_FINAL"
     userHeader = "ID_CLIENTE_NAV"
     itemHeader = "ID_SKU"
+
+    th_dist    = 0.03 #0.04 #0.1 #0.3 #0.5 # 0.0
 
     ####################################################################
 
@@ -281,7 +283,7 @@ def main():
 
     fromAffinityToDendrogram_plotly(debug, item_dissimilarity_jaccard, itemUnique, file_out)
 
-    fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, file_out)
+    fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, th_dist, file_out)
 
     print("DONE!")
 
