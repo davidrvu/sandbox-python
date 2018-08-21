@@ -77,7 +77,15 @@ def fromAffinityToGraph2D(debug, item_dissimilarity_jaccard, itemUnique, th_dist
         Ye+=[layt[e[0]][1],layt[e[1]][1], None]
 
 
-    labels = itemUnique
+    ##########################################
+    # SET LABEL NODES
+    ##########################################   
+    labels    = [None] * totalNodes
+    for i in range(0, totalNodes):
+        labels[i] = "SKU          = " + str(itemUnique[i]) + "\n" #+ \
+                    #"# conexiones = " + str(len(current_adj)) + "\n"
+
+    #labels = itemUnique
 
     # LINES
     trace1=Scatter(x=Xe,
