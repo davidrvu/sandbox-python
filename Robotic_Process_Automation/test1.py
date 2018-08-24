@@ -25,9 +25,9 @@ def main():
     #pyautogui.moveRel(None, 10)  # move mouse 10 pixels down
 
     for i in range(0,5):
-    	j = 5 - i
-    	print("Espera " + str(j) + " segundos.")
-    	time.sleep(1)
+        j = 5 - i
+        print("Espera " + str(j) + " segundos.")
+        time.sleep(1)
 
     pyautogui.moveTo(screenWidth / 2, screenHeight / 2) #MOVE TO CENTER OF SCREEN
     distance = 100
