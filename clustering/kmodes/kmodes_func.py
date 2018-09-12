@@ -15,6 +15,7 @@
 from kmodes.kmodes import KModes
 import numpy as np
 import os
+import pandas as pd
 import sys
 
 sys.path.insert(0, '../../data_science_utils')
@@ -40,67 +41,17 @@ def kmodes_func(debug, num_clusters, features_headers, input_filename, output_fi
     num_clusters_len = len(num_clusters)
     for i in range(0, num_clusters_len):
         current_n_clust = num_clusters[i]
-        print("current_n_clust = " + str(current_n_clust))
-        kmodes_huang = KModes(n_clusters=current_n_clust, init='Huang', verbose=1)
+        print("kmodes current_n_clust = " + str(current_n_clust))
+        kmodes_huang = KModes(n_clusters=current_n_clust, init='Huang', verbose=0)
         kmodes_huang.fit(features)
+        #print("kmodes_huang.labels_ = ")
+        #print(kmodes_huang.labels_)
+        series_clust = pd.Series(kmodes_huang.labels_)
+        df_in['ATRIB_CLUST_'+str(current_n_clust)] = series_clust.values
 
-        print("kmodes_huang.labels_ = ")
-        print(kmodes_huang.labels_)
-
-
-
-
-    sys.exit()
-
-
-    syms = np.genfromtxt('stocks2.csv', dtype=str, delimiter=',')[:, 0]
-    features = np.genfromtxt('stocks2.csv', dtype=object, delimiter=',')[:, 1:]
-
-
-
-    print("syms = ")
-    print(syms)
-    print("features = ")
-    print(features)
-
-
-    #kproto = KPrototypes(n_clusters=4, init='Cao', verbose=3, n_init=1)
-    #kproto = KPrototypes(n_clusters=2, init='Cao', verbose=4, max_iter = 100)
-    kproto = KPrototypes(n_clusters=2, init='Huang', n_init = 1, verbose=True)
-
-    #clusters = kproto.fit_predict(features, categorical=[1, 2])
-    #clusters = kproto.fit_predict(features, categorical=[0, 1])
-    #clusters = kproto.fit_predict(features, categorical=[1])
-
-
-
-    kmodes_huang = KModes(n_clusters=2, init='Huang', verbose=1)
-    kmodes_huang.fit(features)
-
-    print("kmodes_huang.labels_ = ")
-    print(kmodes_huang.labels_)
-
-
-
-
-
-
-    print("clusters = ")
-    print(clusters)
-
-
-    # Print cluster centroids of the trained model.
-    print(kproto.cluster_centroids_)
-    # Print training statistics
-    print(kproto.cost_)
-    print(kproto.n_iter_)
-
-    for s, c in zip(syms, clusters):
-        print("Symbol: {}, cluster:{}".format(s, c))
-
-
-
-
+    print("FINAL df_in = ")
+    print(df_in)
+    pandas_write_csv(debug, df_in, output_filename)
 
     printDeb(debug, "----> END " + str(sys._getframe().f_code.co_name) + "\n")
 
@@ -114,7 +65,7 @@ def main():
     ######################################
     debug = 1
 
-    num_clusters     = [2, 3, 4]
+    num_clusters     = [2, 3, 4, 5, 6, 8]
     features_headers = ["Feature_1", "Feature_2"]
     input_filename   = "dataset_only_categ.csv"
     output_filename  = "dataset_only_categ_OUT.csv"
