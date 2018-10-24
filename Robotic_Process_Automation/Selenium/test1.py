@@ -10,13 +10,33 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import time
 
-URL_str = "http://www.yahoo.com"
-browser = webdriver.Chrome()
-browser.get(URL_str)
+def main():
+    print("==============================================")
+    print("     selenium Test 1                          ")
+    print("==============================================")
 
-elem = browser.find_element_by_name('p')  # Find the search box
-elem.send_keys('seleniumhq' + Keys.RETURN)
+    start_time = time.time()
 
-#browser.quit()
-print("DONE!")
+    URL_str = "http://www.yahoo.com"
+    browser = webdriver.Chrome()
+    browser.get(URL_str)
+
+    elem = browser.find_element_by_name('p')  # Find the search box
+    elem.send_keys('seleniumhq' + Keys.RETURN)
+
+
+ 
+    end_time   = time.time()
+    total_time_seconds = end_time - start_time
+    total_time = time.strftime("%H:%M:%S", time.gmtime(total_time_seconds))
+    print("total_time = " + str(total_time))
+
+
+    #browser.quit()
+    print("DONE!")
+
+
+if __name__ == "__main__":
+    main()
