@@ -7,6 +7,10 @@ def main():
     username   = "user123"
     password   = "pass123"
 
+    #service_id = "telegram_group"
+    #username   = "XXXXX"
+    #password   = "XXXXX"
+
     print("service_id = " + str(service_id))
     print("username   = " + str(username))
     print("password   = " + str(password))
