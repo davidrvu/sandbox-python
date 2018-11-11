@@ -11,6 +11,10 @@ def main():
     #username   = "XXXXX"
     #password   = "XXXXX"
 
+    #service_id  = "gmail_pricing_bot"
+    #username    = "XXXXX"
+    #password    = "XXXXX"
+
     print("service_id = " + str(service_id))
     print("username   = " + str(username))
     print("password   = " + str(password))
