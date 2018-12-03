@@ -19,7 +19,9 @@ def main():
     #autogui.setWindow("value:=Asistente para la activación de Microsoft Office")
     #autogui.setWindow("Asistente")
     #autogui.setWindow("Update Available")
-    autogui.click("AutomationId:=Close")
+
+
+    #autogui.click("AutomationId:=Close")
     autogui.click("Name:=C3")
     autogui.append("Soy el bot","Name:=C3")
     autogui.click("Name:=C4")
