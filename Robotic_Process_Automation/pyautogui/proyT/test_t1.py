@@ -1,5 +1,6 @@
 # DAVIDRVU - 2019
 
+import datetime
 import pyautogui
 import random
 import subprocess
@@ -37,21 +38,23 @@ def main():
     #    pyautogui.dragRel(0, -distance, duration=0.5)  # move up
     #    print("distance = " + str(distance))
 
+    cont = 0
     while(True):
+        print(str(datetime.datetime.now())+ " cont = " + str(cont) + "     ", end='\r', flush=True)
+        if ((cont != 0) and (cont % 800 == 0)):
+            pyautogui.press('f5')
+            time.sleep(4)
         time.sleep(random.uniform(0.5, 2))
+        if random.uniform(0, 1) > 0.5:
+            pyautogui.press('space')
+            time.sleep(0.2)
+        if random.uniform(0, 1) > 0.5:
+            pyautogui.press('space')
+            time.sleep(0.2)
+        pyautogui.press('escape')           
         pyautogui.press('right')   # press the right arrow key
-        if random.uniform(0, 1) > 0.5:
-            pyautogui.press('space')
-            time.sleep(0.2)
-        if random.uniform(0, 1) > 0.5:
-            pyautogui.press('space')
-            time.sleep(0.2)
-        if random.uniform(0, 1) > 0.5:
-            pyautogui.press('space')
-            time.sleep(0.2)
-        if random.uniform(0, 1) > 0.5:
-            pyautogui.press('space')
-            time.sleep(0.2)    
+        cont = cont + 1
+
     print("DONE!")
 
 if __name__ == "__main__":
