@@ -3,6 +3,7 @@
 # pip install opencv-python
 
 import cv2
+import os
 # initialize the camera
 cam    = cv2.VideoCapture(0)   # 0 -> index of camera
 
@@ -20,7 +21,6 @@ cam    = cv2.VideoCapture(0)   # 0 -> index of camera
 
 s, img = cam.read()
 if s:    # frame captured without any errors
-    cv2.imwrite("filename.jpg",img) #save image
-
+    cv2.imwrite(str(os.environ.get('USERPROFILE')) + "/Desktop/photo.jpg",img) #save image
 
 print("DONE!")
