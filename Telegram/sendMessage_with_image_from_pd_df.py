@@ -63,8 +63,8 @@ def sendMessage(bot, chat_id, mensaje):
 
 def main():
 
-    TOKEN   = "xxxxx"
-    chat_id = "xxxxx"
+    TOKEN   = "760707011:AAEPJtHwYbQf6n7bLZW1jTs4gNedZsQmgNk"
+    chat_id = "-238216267" # "AI Planning"
 
     # Telegram Bot Authorization Token
     bot = telegram.Bot(TOKEN)
@@ -80,6 +80,8 @@ def main():
     bot.sendPhoto(chat_id=chat_id, photo=open('df_image.png', 'rb'))
 
     sendMessage(bot, chat_id, "HOLA: ESTA ES LA <b>TABLA AUTOMÁTICA</b> PARA TELEGRAM")
+
+    sendMessage(bot, chat_id, df_in.to_string(index=False, col_space=15, justify="right"))
 
     print("DONE!")
 
