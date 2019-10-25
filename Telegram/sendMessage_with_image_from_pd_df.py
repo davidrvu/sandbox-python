@@ -63,8 +63,8 @@ def sendMessage(bot, chat_id, mensaje):
 
 def main():
 
-    TOKEN   = "760707011:AAEPJtHwYbQf6n7bLZW1jTs4gNedZsQmgNk"
-    chat_id = "-238216267" # "AI Planning"
+    TOKEN   = "XXX"
+    chat_id = "XXX" # "AI Planning"
 
     # Telegram Bot Authorization Token
     bot = telegram.Bot(TOKEN)
