@@ -1,0 +1,63 @@
+URL: https://stackoverflow.com/questions/61421702/google-bigquery-schema-conflict-pyarrow-error-with-numeric-data-type-using-loa
+
+TITLE:
+Google BigQuery Schema conflict (pyarrow error) with Numeric data type using load_table_from_dataframe
+
+
+
+I got the following error when I upload numeric data (int64 or float64) from a Pandas dataframe to a *"Numeric"* Google BigQuery Data Type:
+
+> pyarrow.lib.ArrowInvalid: Got bytestring of length 8 (expected 16)
+
+I tried to change the datatype of 'tt' field from Pandas dataframe without results:
+
+    df_data_f['tt'] = df_data_f['tt'].astype('float64')
+and
+
+    df_data_f['tt'] = df_data_f['tt'].astype('int64')
+
+Using the schema:
+
+     job_config.schema = [
+                        ...             
+                        bigquery.SchemaField('tt', 'NUMERIC')
+                        ...]
+
+
+----------
+
+
+Reading this [google-cloud-python issues report][1] I got:
+
+> NUMERIC	= pyarrow.decimal128(38, 9)
+
+Therefore the *"Numeric"* Google BigQuery Data Type uses more bytes than "float64" or "int64", and that is why pyarrow can't match the datatypes.
+
+
+----------
+I have:
+
+> Python 3.6.4
+
+> pandas                    1.0.3
+
+> pyarrow                   0.17.0
+
+> google-cloud-bigquery     1.24.0
+
+
+  [1]: https://github.com/googleapis/google-cloud-python/issues/7370
+
+
+
+--------------------
+
+ANSWER
+
+
+
+I'm not sure If this is the best solution, but I solved this issue changing the datatype using:
+
+    import decimal
+    ...
+    df_data_f['tt'] = df_data_f['tt'].astype(str).map(decimal.Decimal)
