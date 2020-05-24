@@ -171,7 +171,104 @@ def create_patterns(type_pat, nX, nY):
         ###################################################################################################
         
     elif type_pat == "Spaceships":
+        # Glider
+        status[10,10] = 1
+        status[11,10] = 1
+        status[12,10] = 1
+        status[12,9]  = 1
+        status[11,8]  = 1
+        #Light-weight spaceship (LWSS)
+        status[20,10] = 1
+        status[23,10] = 1
+        status[24,11] = 1
+        status[20,12]  = 1
+        status[24,12]  = 1
+        status[21,13]  = 1
+        status[22,13]  = 1
+        status[23,13]  = 1
+        status[24,13]  = 1
+        
+        #Middle-weight spaceship (MWSS)
+        status[32,30] = 1
+        status[30,31] = 1
+        status[34,31] = 1
+        status[35,32] = 1
+        status[30,33] = 1
+        status[35,33] = 1
+        status[31,34] = 1
+        status[32,34] = 1
+        status[33,34] = 1
+        status[34,34] = 1
+        status[35,34] = 1
 
-        print("TODOTODO")
+        #Heavy-weight spaceship (HWSS)
+        status[32,45] = 1
+        status[33,45] = 1
+        status[30,46] = 1
+        status[35,46] = 1
+        status[36,47] = 1
+        status[30,48] = 1
+        status[36,48] = 1
+        status[31,49] = 1
+        status[32,49] = 1
+        status[33,49] = 1
+        status[34,49] = 1
+        status[35,49] = 1
+        status[36,49] = 1
+
+        #The R-pentomino
+        #status[21,60] = 1
+        #status[22,60] = 1
+        #status[20,61] = 1
+        #status[21,61] = 1
+        #status[21,62] = 1
+    
+    elif type_pat == "glider_gun": # Gosper glider gun
+        x_ini = 35
+        y_ini = 25
+        status[x_ini + 24, y_ini + 0] = 1
+
+        status[x_ini + 22, y_ini + 1] = 1
+        status[x_ini + 24, y_ini + 1] = 1
+
+        status[x_ini + 12, y_ini + 2] = 1
+        status[x_ini + 13, y_ini + 2] = 1
+        status[x_ini + 20, y_ini + 2] = 1
+        status[x_ini + 21, y_ini + 2] = 1
+        status[x_ini + 34, y_ini + 2] = 1
+        status[x_ini + 35, y_ini + 2] = 1
+
+        status[x_ini + 11, y_ini + 3] = 1
+        status[x_ini + 15, y_ini + 3] = 1
+        status[x_ini + 20, y_ini + 3] = 1
+        status[x_ini + 21, y_ini + 3] = 1
+        status[x_ini + 34, y_ini + 3] = 1
+        status[x_ini + 35, y_ini + 3] = 1
+
+        status[x_ini + 0 , y_ini + 4] = 1
+        status[x_ini + 1 , y_ini + 4] = 1
+        status[x_ini + 10, y_ini + 4] = 1
+        status[x_ini + 16, y_ini + 4] = 1
+        status[x_ini + 20, y_ini + 4] = 1
+        status[x_ini + 21, y_ini + 4] = 1
+
+        status[x_ini + 0 , y_ini + 5] = 1
+        status[x_ini + 1 , y_ini + 5] = 1
+        status[x_ini + 10, y_ini + 5] = 1
+        status[x_ini + 14, y_ini + 5] = 1
+        status[x_ini + 16, y_ini + 5] = 1
+        status[x_ini + 17, y_ini + 5] = 1
+        status[x_ini + 22, y_ini + 5] = 1
+        status[x_ini + 24, y_ini + 5] = 1
+
+        status[x_ini + 10, y_ini + 6] = 1
+        status[x_ini + 16, y_ini + 6] = 1
+        status[x_ini + 24, y_ini + 6] = 1
+
+        status[x_ini + 11, y_ini + 7] = 1
+        status[x_ini + 15, y_ini + 7] = 1
+
+        status[x_ini + 12, y_ini + 8] = 1
+        status[x_ini + 13, y_ini + 8] = 1
 
     return status

@@ -19,7 +19,7 @@ def get_trios(l):
 def rule_gen(trio, rule_num):
     if rule_num == 30:
         out = trio[0] ^ (trio[1] or trio[2]) # [left_cell XOR (central_cell OR right_cell)]
-    elif rule_num == 90:
+    elif rule_num == 90: # Sierpiński triangle
         if list(trio) == [1, 1, 1]:
             out = 0
         elif list(trio) == [1, 1, 0]:

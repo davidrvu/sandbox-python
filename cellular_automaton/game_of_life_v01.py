@@ -2,6 +2,7 @@
 
 # Basado en: alejandroortega | https://github.com/alexFocus92/juego_de_la_vida/blob/master/juego.py
 # Inspirado en el video del canal Dot CSV: https://www.youtube.com/watch?v=qPtKv9fSHZY
+#                                          https://www.youtube.com/watch?v=omMcrvVGTMs
 # Conway's Game of Life: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 
 # pip install pygame
@@ -27,7 +28,8 @@ def OnButtonClick(gui, button_id):
         initial_option = "boton3"
     elif button_id == 4:
         initial_option = "boton4"
-    
+    elif button_id == 5:
+        initial_option = "boton5"    
     print("initial_option = " + str(initial_option))
     gui.destroy()
 
@@ -36,7 +38,7 @@ def initialMenu():
 
     # Gets the requested values of the height and widht.
     windowWidth  = 500 # gui.winfo_reqwidth()
-    windowHeight = 500 # gui.winfo_reqheight()
+    windowHeight = 600 # gui.winfo_reqheight()
     print("Width",windowWidth,"Height",windowHeight)
 
     # Gets both half the screen width/height and window width/height
@@ -89,11 +91,14 @@ def initialMenu():
     button4 = tk.Button(text=u"Spaceships", command=lambda: OnButtonClick(gui, 4), height = button_height, width = button_width )
     button4['font'] = font_buttons
 
-    button1.place(relx = 0.25, rely = 0.2)
-    button2.place(relx = 0.25, rely = 0.4)
-    button3.place(relx = 0.25, rely = 0.6)
-    button4.place(relx = 0.25, rely = 0.8)
+    button5 = tk.Button(text=u"Gosper glider gun", command=lambda: OnButtonClick(gui, 5), height = button_height, width = button_width )
+    button5['font'] = font_buttons
 
+    button1.place(relx = 0.25, rely = 0.20)
+    button2.place(relx = 0.25, rely = 0.35)
+    button3.place(relx = 0.25, rely = 0.50)
+    button4.place(relx = 0.25, rely = 0.65)
+    button5.place(relx = 0.25, rely = 0.80)
     gui.mainloop()
 
 def main():
@@ -134,6 +139,8 @@ def main():
         status = create_patterns("Oscillators", nX, nY)
     elif initial_option == "boton4": # Spaceships
         status = create_patterns("Spaceships", nX, nY)
+    elif initial_option == "boton5": # Spaceships
+        status = create_patterns("glider_gun", nX, nY)
     else:
         print("Boton initial_option = " + str(initial_option) + " aún no está configurado!")
         pygame.quit()
@@ -180,10 +187,10 @@ def main():
                     elif status[x,y] == 1 and (nNeigh < 2 or nNeigh > 3):
                         newStatus[x,y] = 0
 
-                poly = [(x*xSize,y*ySize),
-                        ((x+1)*xSize,y*ySize),
-                        ((x+1)*xSize,(y+1)*ySize),
-                        (x*xSize,(y+1)*ySize)]
+                poly = [(x*xSize,     y*ySize),
+                        ((x+1)*xSize, y*ySize),
+                        ((x+1)*xSize, (y+1)*ySize),
+                        (x*xSize,     (y+1)*ySize)]
 
                 if newStatus[x,y] == 1:
                     pygame.draw.polygon(screen, LIVE_COLOR, poly, 0)
