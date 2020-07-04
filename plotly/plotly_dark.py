@@ -10,15 +10,30 @@ import datetime
 def main():
 
     layout = {
-        'title': 'Título ' + str(datetime.datetime.now()) , 
+        'title': 'Título ' + str(datetime.datetime.now()),
+        'titlefont':{
+            'size': 22
+        },
         'title_x':0.5,
         'xaxis': {
-            'title': 'EJE X'
+            'title': 'EJE X',
+            'titlefont':{
+                'size': 18
+            }
         },
         'yaxis': {
-            'title': 'EJE Y'
+            'title': 'EJE Y',
+            'titlefont':{
+                'size': 18
+            }
         },
         'showlegend': True,
+        'legend_title_text':"Título de leyenda",
+        'legend':{
+            'font':{
+                'size': 14
+            }
+        },
         'template': "plotly_dark"
     }
 
