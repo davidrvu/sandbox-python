@@ -1,5 +1,7 @@
 # DAVIDRVU - 2020
 
+# Mantiene ventana actual activa.
+
 import datetime
 import pyautogui
 import random
