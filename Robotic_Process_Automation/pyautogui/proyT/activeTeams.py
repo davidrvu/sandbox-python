@@ -31,8 +31,8 @@ def main():
     while(True):
         print(str(datetime.datetime.now())+ " cont = " + str(cont) + "     ", end='\r', flush=True)
         pyautogui.click()
-        pyautogui.moveRel(1, None) # move mouse 1 pixel RIGHT
-        pyautogui.moveRel(-1, None) # move mouse 1 pixel LEFT
+        pyautogui.moveRel(1, 0) # move mouse 1 pixel RIGHT
+        pyautogui.moveRel(-1, 0) # move mouse 1 pixel LEFT
         time.sleep(10)
         cont = cont + 1
 
