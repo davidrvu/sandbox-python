@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        var source = new EventSource("/my_function");
+        document.open();
+        source.onmessage = function(event) {
+            if(event.data == "END_SIGNAL"){
+                source.close()
+            }
+            else{
+                console.log(event.data);
+                document.write("<p>" + event.data +"</p>");
+            }
+        }
+        document.close();
+    </script>
+
+</head>
+
+<body>
+
+</body>
+</html>

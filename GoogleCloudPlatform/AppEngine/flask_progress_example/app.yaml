@@ -1,0 +1,41 @@
+service: test-progress-bar # OJO: Solo en caso de que ya exista una App Engine
+
+#runtime: python37
+
+runtime: python
+env: flex
+runtime_config:
+    python_version: 3
+
+manual_scaling:
+  instances: 2
+resources:
+  cpu: 1
+  memory_gb: 4
+  disk_size_gb: 10  # Disk size must be between 10GB and 10240GB
+
+entrypoint: gunicorn -b :$PORT main:app
+
+
+#instance_class: F2
+
+#entrypoint: gunicorn -b :$PORT -w 2 main:app
+
+
+
+
+handlers:
+  # This configures Google App Engine to serve the files in the app's static
+  # directory.
+- url: /static
+  static_dir: static
+  # FUENTE 1: https://cloud.google.com/appengine/docs/standard/python3/config/appref#handlers_http_headers
+  # FUENTE 2: https://stackoverflow.com/questions/56644367/server-sent-events-with-flask-and-google-app-engine
+  http_headers:
+    X-Accel-Buffering: no
+
+  # This handler routes all requests not caught above to your main app. It is
+  # required when static routes are defined, but can be omitted (along with
+  # the entire handlers section) when there are no static files defined.
+- url: /.*
+  script: auto

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script>
+
+	var source = new EventSource("/progress");
+	source.onmessage = function(event) {
+		console.log(event.data);
+				
+		var data_in_json = JSON.parse(event.data);
+		console.log(data_in_json);
+
+		$('.progress-bar').css('width', data_in_json.percent+'%').attr('aria-valuenow', data_in_json.percent);
+		$('.progress-bar-label').text(data_in_json.percent+'%');
+		
+		document.getElementById("p1").innerHTML = data_in_json.message;
+
+		if(data_in_json.percent == 100){
+			source.close()
+			document.getElementById("loading-div").style.display = "none";
+		}
+	}
+	</script>
+</head>
+<body>
+	<h1>Testing progress bar</h1>
+
+	
+	<p>system_name          = {{system_name}}</p>
+	<p>input_linea_sublinea = {{input_linea_sublinea}}</p>
+	<p>input_marca          = {{input_marca}}</p>
+	<p>input_opt1           = {{input_opt1}}</p>
+	<p>input_opt2           = {{input_opt2}}</p>
+	<p>input_opt3           = {{input_opt3}}</p>
+	<p>input_opt4           = {{input_opt4}}</p>
+
+	<br>
+	<hr>
+
+    <!-- DIV de bloqueo de pantalla -->
+    <div id="loading-div" class="locking-screen">
+			<!-- 
+			<div style="margin-top: 45vh;vertical-align: middle;font-weight: bold;font-size: 1.4em;color: white">
+				Enviando archivo
+			</div>
+			-->
+
+			<!-- progress-bar-animated SÓLO EN bootstrap >= 4.0.0 -->
+			<p id="p1" style="margin-top: 45vh;vertical-align: middle;font-weight: bold; font-size: 1.4em; color: white">Detalle del procesamiento</p>
+			<div class="progress" style="width: 80%; margin: 50px;">
+				<div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+					<span class="progress-bar-label">0%</span>
+				</div>
+			</div>
+	</div>
+
+	<!-- 
+	<div id="prog_bar1">
+		<p id="p1">Detalle del procesamiento</p>
+		<div class="progress" style="width: 80%; margin: 50px;">
+			<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+				<span class="progress-bar-label">0%</span>
+			</div>
+		</div>
+	</div>	
+	-->
+
+	<p>Contenido de la página ...</p>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    
+</head>
+
+<body>
+	<h1>Testing data input</h1>
+	
+	<p>system_name = {{system_name}}</p>
+	<br>
+    <hr>
+    
+    <form id="form-params" action="{{ url_for('data_processing') }}" method="post" onkeypress="return noenter()">
+
+        <table class="table table-sm table-bordered table-striped table-hover">
+        
+            <tr>
+                <td> Línea-Sublínea </td>
+                <td>
+                    <select required class='form-control form-control-sm' name="input_linea_sublinea" style="text-align:left;">
+                        <option>J01</option>
+                        <option>J02</option>
+                        <option>J03</option>
+                        <option>J0901</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td> Marca </td>
+                <td>
+                    <select required class='form-control form-control-sm' name="input_marca" style="text-align:left;"> 
+                        <option>University</option>
+                        <option>Newport</option>
+                        <option>Sybilla</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td> Selección </td>
+                <td>
+                    <label><input class='form-control form-control-sm' type="checkbox" name="input_opt1" value="">Option 1    </label>
+                    <label><input class='form-control form-control-sm' type="checkbox" name="input_opt2" value="">Option 2    </label>
+                    <label><input class='form-control form-control-sm' type="checkbox" name="input_opt3" value="">Option 3    </label>
+                    <label><input class='form-control form-control-sm' type="checkbox" name="input_opt4" value="">Option 4    </label>
+                </td>
+            </tr>
+
+
+        </table>
+
+    </form>
+
+    <div class="row" style="height: 5vh">
+        <div class="col-md-12"><input type="submit" id="boton-enviar" form="form-params" class="btn btn-primary" name="submit-button" value="Enviar parámetros" ></div>
+    </div>
+
+    <br>
+
+</div>
+</body>
+</html>

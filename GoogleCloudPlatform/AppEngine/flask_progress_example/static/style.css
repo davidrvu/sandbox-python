@@ -1,0 +1,13 @@
+/* DAVIDRVU - 2021                            */
+
+/* DIV de pantalla de bloqueo */
+.locking-screen {
+  /*display:none;*/
+  background: rgba(0,0,0,0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9999999;
+}
