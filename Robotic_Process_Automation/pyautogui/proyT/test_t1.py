@@ -27,6 +27,7 @@ def main():
         print("Espera " + str(j) + " segundos.")
         time.sleep(1)
 
+    print("Go to center screen...")
     pyautogui.moveTo(screenWidth / 2, screenHeight / 2) #MOVE TO CENTER OF SCREEN
     distance = 100
     #while distance > 0:
@@ -40,18 +41,25 @@ def main():
 
     cont = 0
     while(True):
-        print(str(datetime.datetime.now())+ " cont = " + str(cont) + "     ", end='\r', flush=True)
+        print("\n"+ str(datetime.datetime.now())+ " cont = " + str(cont) + "     ", end='\r', flush=True)
+        #pyautogui.click(x=screenWidth / 2, y=screenHeight / 2)
         if ((cont != 0) and (cont % 800 == 0)):
+            print("    Refreshing webpage ...")
             pyautogui.press('f5')
             time.sleep(4)
         time.sleep(random.uniform(0.5, 2))
         if random.uniform(0, 1) > 0.5:
+            print("    Presiona espacio ...")
             pyautogui.press('space')
             time.sleep(0.2)
         if random.uniform(0, 1) > 0.5:
+            print("    Presiona espacio ...")
             pyautogui.press('space')
             time.sleep(0.2)
-        pyautogui.press('escape')           
+        print("    Presiona escape ...")
+        pyautogui.press('escape') 
+        print("    Presiona flecha a la derecha ...")
+        pyautogui.click(x=screenWidth / 2, y=3*screenHeight / 4)         
         pyautogui.press('right')   # press the right arrow key
         cont = cont + 1
 
